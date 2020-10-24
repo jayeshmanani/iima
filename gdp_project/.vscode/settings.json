@@ -1,0 +1,7 @@
+{
+    "python.pythonPath" : "~/Downloads/web_app/django_venv/bin/python",    
+    // "python.pythonPath": "/opt/anaconda3/bin/python3.7",
+    "python.terminal.activateEnvInCurrentTerminal": true,
+    "python.venvPath": "~/Downloads/web_app/django_venv/bin/python",
+    
+}

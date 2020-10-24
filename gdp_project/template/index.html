@@ -1,0 +1,226 @@
+<html>
+    <meta charset="utf-8">
+ <head>
+    <!-- Load d3.js -->
+     <script src="https://d3js.org/d3.v4.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+     <script src="https://code.highcharts.com/maps/highmaps.js"></script>
+    <script src="https://code.highcharts.com/maps/modules/data.js"></script>
+    <script src="https://code.highcharts.com/maps/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/maps/modules/offline-exporting.js"></script>
+    <script src="https://code.highcharts.com/mapdata/custom/world.js"></script>
+
+     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+     <!-- Flag sprites service provided by Martijn Lafeber, https://github.com/lafeber/world-flags-sprite/blob/master/LICENSE -->
+    
+    <link rel="stylesheet" type="text/css" href="//github.com/downloads/lafeber/world-flags-sprite/flags32.css" />
+ 
+ 
+     <style>
+         /* Add some padding on document's body to prevent the content
+         to go underneath the header and footer */
+         body{        
+             padding-top: 60px;
+             padding-bottom: 40px;
+         }
+         .fixed-header, .fixed-footer{
+             width: 100%;
+             position: fixed;        
+             background: #333;
+             padding: 10px 0;
+             color: #fff;
+         }
+         .fixed-header{
+             top: 0;
+         }
+         .fixed-footer{
+             bottom: 0;
+         }
+         .container{
+             width: 80%;
+             margin: 0 auto; /* Center the DIV horizontally */
+         }
+         nav a{
+             color: #fff;
+             text-decoration: none;
+             padding: 7px 25px;
+             display: inline-block;
+         }
+     </style>
+
+<title>
+    Website for Calculating the Risk Index
+</title>
+
+</head>
+<body>
+    <div class="fixed-header" style="background-color: blue">
+        <div class>
+            <nav>
+                <a href="/"><span style="font-size: 30px; padding: 10 10;">Risk Index DashBoard</span></a>
+            </nav>
+        </div>
+    </div>
+
+    <div style="margin-top: 20px;">
+        <div class="col-lg-3" style="float: left; max-height: 650px; max-width: 400px; overflow:scroll; overflow-x: hidden;">
+           <h3 style="display: flex; justify-content: center; align-items: center;"> Dataset  for Year {{year}} </h3>
+           
+           <form method="post" enctype="multipart/form-data" action="selectCountry">
+            {% csrf_token %}
+           <div class="col-lg-4" style="float: left;">
+                {% for con in CountryNames %}
+                <table style="border-width: 2px; border: #333;">
+                <tr>
+                    <input type="submit" value={{con}} name="CountryNames" style="width:100px;">
+                </tr>
+            </table>
+                {% endfor %}
+            </div>
+            <div class="col-lg-8" style="float: left;">
+                <canvas id="myChart" style="width: 500px; height:7545px"></canvas>
+            </div>
+            </form>
+        </div>
+        <div class="col-lg-6" style="float: left;">
+            <br>
+            <br>
+            <div id="mapChart" style="height: 650px; width: 800px;"></div>
+        </div>
+        <div class="col-lg-3"></div>
+    </div>
+
+    
+</body>
+<script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var chartOptions = {
+                            legend: {
+                                display: false
+                                    },
+                            scales: {
+                                xAxes: [{
+                                    barPercentage:1
+                                    }],
+                                yAxes: [
+                                        // {barPercentage: 1},
+                                        // {gridLines:{drawBorder: false}},
+                                        {ticks: {display:false}},
+                                        // {ticks: {mirror: true}},
+                                        {display: false},
+                                        
+                                        ],
+                            elements: {
+                                rectangle: {
+                                borderSkipped: 'left',
+                                }
+                            }
+                            }
+                        };
+    var chart = new Chart(ctx, {
+        // The type of chart we want to create
+        type: 'horizontalBar',
+
+        // The data for our dataset
+        data: {
+            labels: {{CountryNames|safe}},
+            datasets: [{
+                label: 'My First dataset',
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                data: {{BarplotVal|safe}}
+            }]
+        },
+
+        // Configuration options go here
+        options: chartOptions 
+    });
+</script>
+
+<script>
+    var data2 = {{dataForMap|safe}};
+    Highcharts.getJSON('https://cdn.jsdelivr.net/gh/highcharts/highcharts@v7.0.0/samples/data/world-population-density.json', function (data) {
+
+// Prevent logarithmic errors in color calulcation
+data.forEach(function (p) {
+    p.value = (p.value < 1 ? 1 : p.value);
+});
+
+// Initiate the chart
+Highcharts.mapChart('mapChart', {
+
+    chart: {
+        map: 'custom/world'
+    },
+
+    title: {
+        text: 'Risk of the Country based on Financial Data'
+    },
+
+    legend: {
+        title: {
+            text: 'Population density per km²',
+            style: {
+                color: ( // theme
+                    Highcharts.defaultOptions &&
+                    Highcharts.defaultOptions.legend &&
+                    Highcharts.defaultOptions.legend.title &&
+                    Highcharts.defaultOptions.legend.title.style &&
+                    Highcharts.defaultOptions.legend.title.style.color
+                ) || 'black'
+            }
+        }
+    },
+
+    mapNavigation: {
+        enabled: true,
+        buttonOptions: {
+            verticalAlign: 'bottom'
+        }
+    },
+
+    tooltip: {
+        backgroundColor: 'none',
+        borderWidth: 0,
+        shadow: false,
+        useHTML: true,
+        padding: 0,
+        pointFormat: '<span class="f32"><span class="flag {point.properties.hc-key}">' +
+            '</span></span> {point.name}<br>' +
+            '<span style="font-size:30px">{point.value}</span>',
+        positioner: function () {
+            return { x: 0, y: 250 };
+        }
+    },
+
+    colorAxis: {
+        min: 1,
+        max: 1000,
+        type: 'logarithmic'
+    },
+
+    series: [{
+        data: data2,
+        joinBy: ['iso-a3', 'code3'],
+        name: 'Probability of Risk',
+        states: {
+            hover: {
+                color: '#a4edba'
+            }
+        }
+    }]
+});
+});
+
+</script>
+</html>

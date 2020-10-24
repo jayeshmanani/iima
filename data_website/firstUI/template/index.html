@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div>
+    <span class="selection">
+        <h4>Risk Index Data</h4> 
+    </span>
+
+    <span class="selection">
+        <form method="POST">
+            {% csrf_token %}
+
+            Choose Year: <select name='year' id="ddlYears" ></select>
+            <input type="submit" value="View Data" onclick="javascript: form.action='/year';">
+            <input type="submit" value="View Graph" onclick="javascript: form.action='/graph';">
+        </form>
+    </span>
+</div>
+
+<br>
+<br>
+
+<!-- This Script is for Dynamically Creat the Drop Down Menu for Years-->
+<script type="text/javascript">
+    window.onload = function () {
+        //Reference the DropDownList.
+        var ddlYears = document.getElementById("ddlYears");
+        //Determine the Current Year.
+        var currentYear = (new Date()).getFullYear();
+ 
+        //Loop and add the Year values to DropDownList.
+        for (var i = currentYear; i >= 1980; i--) {
+            var option = document.createElement("OPTION");
+            option.innerHTML = i;
+            option.value = i;
+            ddlYears.appendChild(option);
+        }
+    };
+</script>
+
+ <!-- script for alert message if data is updated -->
+<script type="text/javascript">
+    var alrt = {{ alrt | safe }};  // no_record_check **must** be an integer
+    if (alrt == 1) {
+        alert('Your Data Is Updated successfully!');
+    }
+</script>
+
+{% endblock %}

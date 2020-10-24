@@ -1,0 +1,223 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    {% if is_barPlot%}
+    <div>
+        <h5 style="display: flex; justify-content: center; align-items: center;"> Bar Plot for Year {{year}}</h5>
+    </div>
+    <span class="selection">
+
+        <div>
+            <form action="/graph2">
+                <!-- {% csrf_token %} -->
+                <label for="barPlt">Bar Plot For:</label>
+                <select id="barPlts" name="barPlts">
+                    <option value="debtDistressProb,{{year}}">Debt Distress Probability</option>
+                    <option value="specGradeProb,{{year}}">Speculative Grade Probability</option>
+                </select>
+
+                <!-- <label for="regions">Bar Plot For Region:</label> --> 
+                <select id="region" name="region">
+                    <option value="global">Global</option>
+                    <option value="eastAsia">East Asia and Pacific</option>
+                    <option value="europe">Europe and Central Asia</option>
+                    <option value="latinAmerica">Latin America & the Caribbean</option>
+                    <option value="middleEast">Middle East and North Africa</option>
+                    <option value="northAmerica">North America</option>
+                    <option value="southAsia">South Asia</option>
+                    <option value="saharanAfrica">Sub-Saharan Africa</option>
+                </select>
+
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+
+        <div style='margin: 0px 0px 0px 20px'>
+            <form action="/worldPlot">
+                <!-- {% csrf_token %} -->
+                <label for="worldPlt">World Map For:</label>
+                <select id="worldPlot" name="worldPlot">
+                    <option value="debtDistressProb,{{year}}">Debt Distress Probability</option>
+                    <option value="specGradeProb,{{year}}">Speculative Grade Probability</option>
+                </select>
+                <input type="submit" value="Submit">
+            
+                <!-- <form method="POST">
+                {% csrf_token %}
+
+                <button type="submit" value={{year}} name='year' onclick="javascript: form.action='/spec_WorldPlot'">View Speculative Grade on World Map</button>
+                <button type="submit" value={{year}} name='year' onclick="javascript: form.action='/debt_WorldPlot'">View Debt Distress Probability on World Map</button> -->
+            </form>
+        </div>
+    </span>
+   
+        <div style="margin: 20px; width: 1380px;">
+        <canvas id="myChart"></canvas>
+        </div>
+    {% endif %}
+
+    {% if is_spec_worldPlot and not is_barplot%}
+    <h4 style="display: flex; justify-content: center; align-items: center;"> Speculative Grade World Map for {{year}}</h4>
+
+        <div style="margin: 20px; width: 1380px; height: 550px;" id="mapChart"> </div> </div>
+    {% endif %}
+
+
+    {% if not is_spec_worldPlot and not is_barPlot %}
+    <h4 style="display: flex; justify-content: center; align-items: center;"> Debt Distress World Map for {{year}}</h4>
+    
+        <div style="margin: 20px; width: 1380px; height: 550px;" id="mapChart"></div>
+    {% endif %}
+
+<!-- Script For Barplot -->
+<script>
+    var label_name = ( {{is_debt_distress|safe}} ? 'Debt Distress Probability': 'Speculative Grade Probability');
+    var ctx = document.getElementById('myChart').getContext('2d');
+var chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'bar',
+
+    // The data for our dataset
+    data: {
+        labels: {{country_name|safe}},
+        datasets: [{
+            label: label_name,
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: {{barplotVal|safe}}
+        }]
+    },
+
+    // Configuration options go here
+    options: {}
+});
+
+
+</script>
+
+<!-- Script for Creating Speculative Grade WorldMap -->
+<script>
+    var spec_data={{dataForMapGraph|safe}};
+
+    var is_Spec = {{is_spec_worldPlot|safe}};
+    var title_text = ( is_Spec ? 'Speculative Grade Probability':'Debt Distress Probability');
+    var series_name = ( is_Spec ? 'Speculative Grade':'Debt Distress Probability');
+
+    Highcharts.getJSON('https://cdn.jsdelivr.net/gh/highcharts/highcharts@v7.0.0/samples/data/world-population-density.json', function (data) { 
+      
+
+        // Prevent logarithmic errors in color calulcation
+        data.forEach(function (p) {
+            p.value = (p.value < 1 ? 1 : p.value);
+        });
+    
+        // Initiate the chart
+        Highcharts.mapChart('mapChart', {
+    
+            chart: {
+                map: 'custom/world'
+            },
+
+            colors: ['rgba(64,19,117,0.05)', 'rgba(64,19,117,0.2)', 'rgba(64,19,117,0.4)',
+                'rgba(64,19,117,0.5)', 'rgba(64,19,117,0.6)', 'rgba(64,19,117,0.8)', 'rgba(64,19,117,1)'],
+    
+            title: {
+                    text: title_text
+                    //'Speculative Grade Probability'
+            },
+    
+            legend: {
+                title: {
+                    text: title_text,
+                    style: {
+                        color: ( // theme
+                            Highcharts.defaultOptions &&
+                            Highcharts.defaultOptions.legend &&
+                            Highcharts.defaultOptions.legend.title &&
+                            Highcharts.defaultOptions.legend.title.style &&
+                            Highcharts.defaultOptions.legend.title.style.color
+                        ) || 'black'
+                    }
+                }
+            },
+    
+            mapNavigation: {
+                enabled: true,
+                buttonOptions: {
+                    verticalAlign: 'bottom'
+                }
+            },
+    
+            tooltip: {
+                backgroundColor: 'none',
+                borderWidth: 0,
+                shadow: false,
+                useHTML: true,
+                padding: 0,
+                pointFormat: '<span class="f32"><span class="flag {point.properties.hc-key}">' +
+                    '</span></span> {point.name}<br>' +
+                    '<span style="font-size:30px">{point.value}</span>',
+                positioner: function () {
+                    return { x: 0, y: 250 };
+                }
+            },
+    
+         /*        colorAxis: {
+                min: 1,
+                //max: 1000,
+                        max: {{maxVal|safe}},
+                        type: 'logarithmic'
+                    },
+            */
+        /*   colorAxis: {
+                min: 1,
+                max: 100,
+                type: 'linear',
+                minColor: '#ffeded',
+                maxColor: '#ff0202',
+                lineColor: 'blue',
+                lineWidth: 10
+            },
+        */
+
+            colorAxis: {
+                dataClassColor: 'category',
+                dataClasses: [{
+                    to: 14
+                }, {
+                    from: 14,
+                    to: 28
+                }, {
+                    from: 28,
+                    to: 42
+                }, {
+                    from: 42,
+                    to: 57
+                }, {
+                    from: 57,
+                    to: 71
+                }, {
+                    from: 71,
+                    to: 85
+                }, {
+                    from: 85
+                }]
+            },
+
+   series: [{
+                data: spec_data,
+                joinBy: ['iso-a3', 'code3'],
+                name: series_name,
+                states: {
+                    hover: {
+                        color: '#a4edba'
+                    }
+                }
+            }]
+        });
+    });
+    
+</script>
+
+{% endblock %}

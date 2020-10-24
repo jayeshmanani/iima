@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div>
+    <span class="selection">
+        <h4>Risk Index Data</h4> 
+    </span>
+
+    <span class="selection">
+        <form method="POST" action="/updateStatus">
+            {% csrf_token %}
+
+            Update Data for Year: <select name='year' id="ddlYears" ></select>
+            
+            Country <select id="cntry" name='country'>
+                {% for country in country_l %}
+                    <option value='{{country.country_name}}'>{{ country.country_name }}</option>
+                {% endfor %}
+            </select>
+            Set Value
+            <select id="truef" name="truef">
+                <option value="true">True</option>
+                <option value="false">False</option>
+            </select>
+
+            <input type="submit" value="update">
+        </form>
+    </span>
+</div>
+
+<br>
+<br>
+
+
+
+<!-- This Script is for Dynamically Creat the Drop Down Menu for Years-->
+<script type="text/javascript">
+    window.onload = function () {
+        //Reference the DropDownList.
+        var ddlYears = document.getElementById("ddlYears");
+        //Determine the Current Year.
+        var currentYear = (new Date()).getFullYear();
+ 
+        //Loop and add the Year values to DropDownList.
+        for (var i = currentYear; i >= 1980; i--) {
+            var option = document.createElement("OPTION");
+            option.innerHTML = i;
+            option.value = i;
+            ddlYears.appendChild(option);
+        }
+    };
+</script>
+
+
+{% endblock %}

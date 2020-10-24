@@ -1,0 +1,91 @@
+.selection{
+    justify-content: center; 
+    align-items: center; 
+    display: flex;
+}
+
+html, body {
+    height: 100%;
+    scroll-padding-top: 70px; /* height of sticky header */
+}
+
+body{        
+    padding-top: 60px;
+    padding-bottom: 40px;    
+    /* overflow-y: hidden; /* Hide vertical scrollbar */
+    /* overflow-x: hidden; Hide horizontal scrollbar */
+}
+
+.fixed-header, .fixed-footer{
+    width: 100%;
+    position: fixed;        
+    background: #333;
+    padding: 10px 0;
+    color: #fff;
+    justify-content: center; 
+    align-items: center; 
+    display: flex;
+    z-index: 10;
+}
+
+.fixed-header{
+    margin-left: 0px;
+    top: 0;
+}
+
+.fixed-footer{
+    bottom: 0;
+}
+
+.container{
+    width: 80%;
+    margin: 0 auto; /* Center the DIV horizontally */
+}
+
+nav a{
+    color: #fff;
+    text-decoration: none;
+    padding: 7px 25px;
+    display: inline-block;
+    z-index: 10;
+}
+/* footer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    background-color: black;
+    position: fixed; 
+    width: 100%;
+  } */
+
+p, a{
+    color: white;
+}
+
+.footer-social{
+    margin: 10px 10px 10px 10px;
+}
+
+#mapChart {
+    height: 560px; 
+    width: 90%; 
+    margin: 0 auto; 
+}
+
+.highcharts-tooltip>span {
+    padding: 10px;
+    white-space: normal !important;
+    width: 200px;
+}
+
+.loading {
+    margin-top: 10em;
+    text-align: center;
+    color: gray;
+}
+
+.f32 .flag {
+    vertical-align: middle !important;
+}
+

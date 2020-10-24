@@ -1,0 +1,23 @@
+Open terminal/cmd
+
+locate the folder location
+
+
+Move into folder location where requirements.txt and data_website folder is there
+by using command -> cd folder_name
+
+Then run this code -> pip install -r requirements.txt
+
+Then move into folder data_website using command -> cd data_website
+
+Then run the command -> python manage.py runserver
+
+Then open any browser and go for -> http://localhost:8000/
+
+*try for only year of 2020 and 2019, because otherwise it takes more than 2 minutes according to your laptop capacity.
+
+select year (only 2020 and 2019)
+
+- View Data Button - You can see the data
+- View Graph Button - You can See bar chart
+- View Data on World Map - You can see data plotted on world map (not data is working, working on it)
