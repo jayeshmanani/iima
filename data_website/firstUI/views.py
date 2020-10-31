@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.http import request
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from firstUI.functions import check_if_data
+from firstUI.functions import check_if_data, refresh_data
 import datetime
 import pandas as pd
 from firstUI.models import FinanceData
@@ -10,12 +11,13 @@ from firstUI.models import Country
 d_wmap = pd.read_json('https://cdn.jsdelivr.net/gh/highcharts/highcharts@v7.0.0/samples/data/world-population-density.json')
 
 def indexPage(request):
-    cntry = Country.objects.all()
-    country_list = []
-    for i in cntry:
-        country_list.append(i.country_name)
-    context = {'country_list':country_list}
-    return render(request, 'index.html', context)
+    # tf_status = 0
+    # cntry = Country.objects.all()
+    # country_list = []
+    # for i in cntry:
+    #     country_list.append(i.country_name)
+    # context = {'country_list':country_list, 'tf_status':tf_status}
+    return render(request, 'index.html') #, context)
 
 def year(request):
     f_year = int(request.POST['year'])
@@ -51,11 +53,6 @@ def graph2(request):
     for_which = vals.split(',')[0]
     f_year = int(vals.split(',')[1])
     rgn = request.GET['region']
-    
-    # print(rgn)
-    # print(for_which)
-    # print(f_year)
-    
     is_barPlot = True
     is_debt_distress = 1
     data = check_if_data(f_year)
@@ -154,3 +151,32 @@ def updateStatus(request):
         country_l = list(Country.objects.all().values())
         context = {'country_l':country_l}
         return render(request,'updateStatus.html', context)
+
+def pieChart(request):
+    is_pie_Debt = 1
+    debt_labels = ['L.totexp~p','L.realgd~c','L.totres~p','L.fiscal~o','L.pv_est','dum_def_~5','L.ge_est','L.realgd~r','L.cpich~o'] #8 variable
+    debt_data = [0.1355, 0.1287, 0.1105, 0.0686, 0.0406, 0.0809, 0.3447, 0.0200, 0.0705]
+    labels = debt_labels
+    data = debt_data
+    fontColour = ["black"]
+    fontColour = fontColour*10
+    if request.method == 'POST':
+        vals = request.POST['piePlts']
+        if vals == 'specGradeProb':
+            is_pie_Debt = 0
+            spec_labels = ['L.logrea~c','L.saving~o','L.totres~b','L.rl_est','L.dum_de~s','L.govtgr~o','L.m3gdp_~d','L.export~o','L.fiscal~o'] #9 variable
+            spec_data = [0.2483, 0.1514, 0.0304, 0.2925, 0.0406, 0.1199, 0.0611, 0.0025, 0.0534]
+            labels = spec_labels
+            data = spec_data
+
+    context = {'is_pie_Debt':is_pie_Debt, 'labels':labels, 'data':data, 'fontColour':fontColour}
+    return render(request, 'pieChart.html', context=context)
+
+def refreshData(request):
+    f_year = int(request.POST['year'])
+    tf_status = refresh_data(f_year)
+    context = {'tf_status':tf_status}
+    return redirect(request, 'index.html', context)
+    
+
+

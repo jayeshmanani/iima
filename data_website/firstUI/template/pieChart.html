@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div>
+    <span class="selection">
+        <h4>Risk Index Data - Pie Chart</h4> 
+    </span>
+
+    <span class="selection">
+        <form method="POST" action="/pieChart">
+            {% csrf_token %}
+
+            <label for="piePlts">Pie Chart For:</label>
+            <select id="piePlts" name="piePlts">
+                <option value="debtDistressProb">Debt Distress Probability</option>
+                <option value="specGradeProb">Speculative Grade Probability</option>
+            </select>
+            <input type="submit" value="View Chart">
+        </form>
+    </span>
+</div>
+<hr>
+<div id="container" style="width: 80%; margin:0% 10% 0% 10%;">
+    <canvas id="pie-chart"></canvas>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/emn178/chartjs-plugin-labels/src/chartjs-plugin-labels.js"></script>
+  <script>
+    var pie_title = ( {{is_pie_Debt|safe}} ? 'Pie chart for Debt Distress Probability':'Pie chart for Speculative Grade Probability');
+    var config = {
+      type: 'pie',
+      data: {
+        datasets: [{
+          data: {{ data|safe }},
+          backgroundColor: ["#001f3f", "#0074D9","#7FDBFF", "#FF4136", "#2ECC40", "#FF851B",  "#B10DC9", "#FFDC00", "#39CCCC", "#01FF70", "#85144b", "#F012BE", "#3D9970", "#111111", "#AAAAAA"],
+          borderColor: "white"
+        }],
+        labels: {{ labels|safe }}
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        title:{
+            display: true,
+            text: pie_title
+        },
+        plugins: {
+            labels: {
+              render: 'percentage',
+              fontColor: {{fontColour|safe}},
+              precision: 2,
+              showZero: true,
+              textShadow: true,
+              shadowOffsetX: -5,
+              shadowOffsetY: 5,
+              position: "outside",
+              overlap: true,
+              showActualPercentages: true,
+              outsidePadding: 4,
+              textMargin: 4
+            }
+          },
+        }
+    };
+
+    window.onload = function() {
+      var ctx = document.getElementById('pie-chart').getContext('2d');
+      window.myPie = new Chart(ctx, config);
+    };
+
+  </script>
+
+{% endblock %}

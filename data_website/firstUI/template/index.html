@@ -14,12 +14,13 @@
             Choose Year: <select name='year' id="ddlYears" ></select>
             <input type="submit" value="View Data" onclick="javascript: form.action='/year';">
             <input type="submit" value="View Graph" onclick="javascript: form.action='/graph';">
+            <input type="submit" value="Refresh Data" onclick="javascript: form.action='/refreshData';">
         </form>
     </span>
 </div>
 
 <br>
-<br>
+<hr>
 
 <!-- This Script is for Dynamically Creat the Drop Down Menu for Years-->
 <script type="text/javascript">
@@ -41,10 +42,14 @@
 
  <!-- script for alert message if data is updated -->
 <script type="text/javascript">
-    var alrt = {{ alrt | safe }};  // no_record_check **must** be an integer
+    var alrt = {{ alrt | safe }};
+    var tf_status = {{ tf_status | safe }}; 
     if (alrt == 1) {
         alert('Your Data Is Updated successfully!');
-    }
+    };
+    if (tf_status == 1) {
+        alert('Your Data Is Refreshed Successfully!');
+    };
 </script>
 
 {% endblock %}

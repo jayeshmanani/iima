@@ -11,7 +11,7 @@
         <div>
             <form action="/graph2">
                 <!-- {% csrf_token %} -->
-                <label for="barPlt">Bar Plot For:</label>
+                <label for="barPlts">Bar Plot For:</label>
                 <select id="barPlts" name="barPlts">
                     <option value="debtDistressProb,{{year}}">Debt Distress Probability</option>
                     <option value="specGradeProb,{{year}}">Speculative Grade Probability</option>
@@ -42,16 +42,9 @@
                     <option value="specGradeProb,{{year}}">Speculative Grade Probability</option>
                 </select>
                 <input type="submit" value="Submit">
-            
-                <!-- <form method="POST">
-                {% csrf_token %}
-
-                <button type="submit" value={{year}} name='year' onclick="javascript: form.action='/spec_WorldPlot'">View Speculative Grade on World Map</button>
-                <button type="submit" value={{year}} name='year' onclick="javascript: form.action='/debt_WorldPlot'">View Debt Distress Probability on World Map</button> -->
             </form>
         </div>
     </span>
-   
         <div style="margin: 20px; width: 1380px;">
         <canvas id="myChart"></canvas>
         </div>
@@ -96,7 +89,7 @@ var chart = new Chart(ctx, {
 
 </script>
 
-<!-- Script for Creating Speculative Grade WorldMap -->
+<!-- Script for Creating WorldMap -->
 <script>
     var spec_data={{dataForMapGraph|safe}};
 
@@ -162,25 +155,6 @@ var chart = new Chart(ctx, {
                     return { x: 0, y: 250 };
                 }
             },
-    
-         /*        colorAxis: {
-                min: 1,
-                //max: 1000,
-                        max: {{maxVal|safe}},
-                        type: 'logarithmic'
-                    },
-            */
-        /*   colorAxis: {
-                min: 1,
-                max: 100,
-                type: 'linear',
-                minColor: '#ffeded',
-                maxColor: '#ff0202',
-                lineColor: 'blue',
-                lineWidth: 10
-            },
-        */
-
             colorAxis: {
                 dataClassColor: 'category',
                 dataClasses: [{

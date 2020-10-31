@@ -44,8 +44,13 @@ def weo_data(year):
 
     fnc = 'GGXCNL_NGDP+GGXWDG_NGDP+PCPIPCH+TX_RPCH+NGSD_NGDP'
     sr_code = country_string+'.'+fnc
+    month = datetime.datetime.today().month
+    if month >=10 or month < 4:
+        month = '10'
+    elif month >= 4 or month < 10:
+        month = '04'
 
-    data = dbnomics.fetch_series("IMF", "WEO", series_code=sr_code, max_nb_series=1000)
+    data = dbnomics.fetch_series("IMF", f'WEO:{year}-{month}', series_code=sr_code, max_nb_series=1000)
 
     current_year_data = data.query('period=='+str(year))
     before_1_year_data = data.query('period=='+str(year-1))
@@ -159,9 +164,6 @@ def wb_data(year, indicatr):
 
     cr_yr_dict = {}
     before_1_yr_dict = {}
-    # before_2_yr_dict = {}
-    # before_3_yr_dict = {} 
-
     values_ed = []
     for i in range(6):
         try:
@@ -276,77 +278,6 @@ def LL_GDP_data(year):
             values_ed.append(None)
     return values_ed
 
-
-# ''' 
-
-# 16) Exchange Rates, Real Effective Exchange Rate based on Consumer Price Index, Index - EREER_IX
-
-# '''
-# @ray.remote
-# def EREER_IX_data(year):
-#     fnc = 'EREER_IX'
-#     values_ed = []
-
-#     sr_code = 'A..'+fnc
-#     data = dbnomics.fetch_series("IMF", "IFS", series_code=sr_code, max_nb_series=1000)
-
-#     current_year_data = data.query('period=='+str(year))
-#     before_1_year_data = data.query('period=='+str(year-1))
-#     before_2_year_data = data.query('period=='+str(year-2))
-#     before_3_year_data = data.query('period=='+str(year-3))
-
-#     for country in final_df.country_id:
-#         country_data = current_year_data[current_year_data['REF_AREA'] == country]
-#         if country_data.empty:
-#             value = None
-#         else:
-#             ind = country_data.index[0]
-#         value = country_data['value'][ind]
-
-#         if str(value) == 'nan' or type(value) == type(None):
-#             print("Could Not Find the Data {} for year {} for country {}".format(fnc, year, country))
-#             print("Try to Fetching the Data {} for year {} for country {}".format(fnc, year-1, country))
-#             country_data = before_1_year_data[before_1_year_data['REF_AREA'] == country]
-#             if country_data.empty:
-#                 value = None
-#             else:
-#                 ind = country_data.index[0]
-#                 value = country_data['value'][ind]
-        
-#             if str(value) == 'nan' or type(value) == type(None):
-#                 print("Could Not Find the Data {} for year {} for country {}".format(fnc, year-1, country))
-#                 print("Try to Fetching the Data {} for year {} for country {}".format(fnc, year-2, country))
-#                 country_data = before_2_year_data[before_2_year_data['REF_AREA'] == country]
-#                 if country_data.empty:
-#                     value = None
-#                 else:
-#                     ind = country_data.index[0]
-#                 value = country_data['value'][ind]
-            
-#                 if str(value) == 'nan' or type(value) == type(None):
-#                     print("Could Not Find the Data {} for year {} for country {}".format(fnc, year-2, country))
-#                     print("Try to Fetching the Data {} for year {} for country {}".format(fnc, year-3, country))
-#                     country_data = before_3_year_data[before_3_year_data['REF_AREA'] == country]
-#                     if country_data.empty:
-#                         value = None
-#                     else:
-#                         ind = country_data.index[0]
-#                         value = country_data['value'][ind]
-
-#                     if str(value) == 'nan' or type(value) == type(None):
-#                         print("Could Not Find the Data {} for year {} for country {}".format(fnc, year-3, country))
-#                         values_ed.append(value)
-#                     else:
-#                         values_ed.append(value)
-#                 else:
-#                     values_ed.append(value)
-#             else:
-#                 values_ed.append(value)
-#         else:
-#             values_ed.append(value)
-#     return values_ed
-
-
 '''
     Fetch_data function fetches all the data and returns values by combining all the values
 '''
@@ -427,8 +358,8 @@ def fetch_data(year):
 def check_if_data(year):
     year = year - 1
 
-    my_data_folder = os.path.join(THIS_FOLDER, 'data')
-    data_file = my_data_folder+"/"+str(year)+".pkl"
+    # my_data_folder = os.path.join(THIS_FOLDER, 'data')
+    # data_file = my_data_folder+"/"+str(year)+".pkl"
 
     cnt = FinanceData.objects.filter(data_year=year, show=True).count()
     # print(cnt)
@@ -443,7 +374,7 @@ def check_if_data(year):
         print("Data is not there so, fetching from API's")
         data = fetch_data(year)
         
-        data.to_pickle(data_file)
+        # data.to_pickle(data_file)
         
         dts = data.values
         for enm, test in enumerate(dts):    
@@ -484,13 +415,56 @@ def check_if_data(year):
             fn.save()
     return data
 
-    
+def refresh_data(year):
+    year = year - 1
+    c_year = datetime.datetime.today().year 
+    # try:
+    if year in [c_year, c_year-1, c_year-2, c_year-3, c_year-4, c_year-5]:
+        print("Refreshing the Data for Year, {}".format(year+1))
+        data = fetch_data(year)
+        dts = data.values
 
-    # if path.exists(data_file):
-    #     data = pd.read_pickle(data_file)
-    # else:
-    #     print("Data is not there so, fetching from API's")
-    #     data = fetch_data(year)
-    #     data.to_pickle(data_file)
-    
-    # return data
+        for enm, test in enumerate(dts):    
+            print("enm is {} and data value is {}".format(enm, test))
+            cnn = Country.objects.filter(country_name = test[2])
+            print("cnn is {}".format(cnn))
+            print("cnn value is {}".format(cnn.get()))
+        #     fn, created  = FinanceData.objects.update(country_id=cnn.get(),
+        #                 data_year = year,
+        #                 fiscal_balance_gdp = test[5],
+        #                 government_grossdebt_gdp = test[6],
+        #                 inflation_data = test[7],
+        #                 exports_growth = test[8],
+        #                 savings_gdp = test[9],
+        #                 externaldebt = test[10],
+        #                 exports = test[11],
+        #                 reserves = test[12],
+        #                 real_gdppc = test[13],
+        #                 imports = test[14],
+        #                 real_gdpgrowth = test[15],
+        #                 real_gnipc = test[16],
+        #                 nominal_gdp = test[17],
+        #                 political_stability = test[18],
+        #                 rule_of_law = test[19],
+        #                 govt_effectiveness = test[20],
+        #                 m3_gdp = test[21],
+        #                 externaldebt_exports = test[22],
+        #                 reserves_import = test[23],
+        #                 reserves_gdp = test[24],
+        #                 log_real_gnipc = test[25],
+        #                 predicted_specgrade = test[26],
+        #                 Speculative_Grade_Prob = test[27],
+        #                 y_hat = test[28],
+        #                 Threshold_Yhat_sigma = test[29],
+        #                 Debt_Distress_prob = test[30],
+        #                 show = True                                                                                            
+        #                 )  
+        #     fn.save()
+        print("Refreshed the Data for {}".format(year+1))
+    else:
+        print("The data can't be Refreshed as it is not of Last Three Years")
+    # return 1
+    return
+    # except:
+    #     print("Some Error Occured While Refreshing the Data for Year {}".format(year+1))
+    #     return 0
