@@ -18,8 +18,13 @@ import sqlite3
 
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 my_file = os.path.join(THIS_FOLDER, 'data/new_final_df.pkl')
+my_file2 = os.path.join(THIS_FOLDER, 'data/new_final_df.csv')
 
-final_df = pd.read_pickle(my_file)
+try:
+    final_df = pd.read_pickle(my_file)
+except:
+    final_df = pd.read_csv(my_file2)
+    final_df.to_pickle(my_file)
 
 ''' 
 
@@ -36,7 +41,7 @@ returns as list contains values as follows in sequence [GGXCNL_NGDP, GGXWDG_NGDP
 '''
 @ray.remote
 def weo_data(year):
-    values_ed = []
+    # values_ed = []
     country_string = ''
     for country in final_df['country_code']:
         country_string+="+"+country
@@ -292,7 +297,11 @@ def fetch_data(year):
         ray.init()
         c_year = datetime.datetime.today().year 
         # year = year - 1
-        final_dfd = pd.read_pickle(my_file)
+        try:
+            final_dfd = pd.read_pickle(my_file)
+        except:
+            final_dfd = pd.read_pickle(my_file2)
+            final_df.to_pickle(my_file)
         if c_year >= year:
             ret_id1 = weo_data.remote(year)
             ret_id2 = wb_data.remote(year, 'DT.DOD.DECT.CD')
@@ -379,9 +388,6 @@ def check_if_data(year):
         dts = data.values
         for enm, test in enumerate(dts):    
             cnn = Country.objects.filter(country_name = test[2])
-            # try:
-            #     cnn2 = FinanceData.objects.filter(country_id=cnn.get(), data_year=year).get()
-            # except:
             fn, created  = FinanceData.objects.update_or_create(country_id=cnn.get(),
                         data_year = year,
                         fiscal_balance_gdp = test[5],
@@ -418,53 +424,53 @@ def check_if_data(year):
 def refresh_data(year):
     year = year - 1
     c_year = datetime.datetime.today().year 
-    # try:
-    if year in [c_year, c_year-1, c_year-2, c_year-3, c_year-4, c_year-5]:
-        print("Refreshing the Data for Year, {}".format(year+1))
-        data = fetch_data(year)
-        dts = data.values
+    try:
+        if year in [c_year, c_year-1, c_year-2, c_year-3, c_year-4, c_year-5]:
+            print("Refreshing the Data for Year, {}".format(year+1))
+            data = fetch_data(year)
+            dts = data.values
 
-        for enm, test in enumerate(dts):    
-            print("enm is {} and data value is {}".format(enm, test))
-            cnn = Country.objects.filter(country_name = test[2])
-            print("cnn is {}".format(cnn))
-            print("cnn value is {}".format(cnn.get()))
-        #     fn, created  = FinanceData.objects.update(country_id=cnn.get(),
-        #                 data_year = year,
-        #                 fiscal_balance_gdp = test[5],
-        #                 government_grossdebt_gdp = test[6],
-        #                 inflation_data = test[7],
-        #                 exports_growth = test[8],
-        #                 savings_gdp = test[9],
-        #                 externaldebt = test[10],
-        #                 exports = test[11],
-        #                 reserves = test[12],
-        #                 real_gdppc = test[13],
-        #                 imports = test[14],
-        #                 real_gdpgrowth = test[15],
-        #                 real_gnipc = test[16],
-        #                 nominal_gdp = test[17],
-        #                 political_stability = test[18],
-        #                 rule_of_law = test[19],
-        #                 govt_effectiveness = test[20],
-        #                 m3_gdp = test[21],
-        #                 externaldebt_exports = test[22],
-        #                 reserves_import = test[23],
-        #                 reserves_gdp = test[24],
-        #                 log_real_gnipc = test[25],
-        #                 predicted_specgrade = test[26],
-        #                 Speculative_Grade_Prob = test[27],
-        #                 y_hat = test[28],
-        #                 Threshold_Yhat_sigma = test[29],
-        #                 Debt_Distress_prob = test[30],
-        #                 show = True                                                                                            
-        #                 )  
-        #     fn.save()
-        print("Refreshed the Data for {}".format(year+1))
-    else:
-        print("The data can't be Refreshed as it is not of Last Three Years")
-    # return 1
-    return
-    # except:
-    #     print("Some Error Occured While Refreshing the Data for Year {}".format(year+1))
-    #     return 0
+            for enm, test in enumerate(dts):    
+                print("enm is {} and data value is {}".format(enm, test))
+                cnn = Country.objects.filter(country_name = test[2])
+                # print("cnn is {}".format(cnn))
+                # print("cnn value is {}".format(cnn.get()))
+                FinanceData.objects.filter(country_id=cnn.get(), data_year = year).update(
+            #     fn, created  = FinanceData.objects.update(country_id=cnn.get(),
+            #                 data_year = year,
+                            fiscal_balance_gdp = test[5],
+                            government_grossdebt_gdp = test[6],
+                            inflation_data = test[7],
+                            exports_growth = test[8],
+                            savings_gdp = test[9],
+                            externaldebt = test[10],
+                            exports = test[11],
+                            reserves = test[12],
+                            real_gdppc = test[13],
+                            imports = test[14],
+                            real_gdpgrowth = test[15],
+                            real_gnipc = test[16],
+                            nominal_gdp = test[17],
+                            political_stability = test[18],
+                            rule_of_law = test[19],
+                            govt_effectiveness = test[20],
+                            m3_gdp = test[21],
+                            externaldebt_exports = test[22],
+                            reserves_import = test[23],
+                            reserves_gdp = test[24],
+                            log_real_gnipc = test[25],
+                            predicted_specgrade = test[26],
+                            Speculative_Grade_Prob = test[27],
+                            y_hat = test[28],
+                            Threshold_Yhat_sigma = test[29],
+                            Debt_Distress_prob = test[30],
+                            show = True                                                                                           
+                            )  
+            print("Refreshed the Data for {}".format(year+1))
+            return 1
+        else:
+            print("The data can't be Refreshed as it is not of Last Three Years")
+            return 0
+    except:
+        print("Some Error Occured While Refreshing the Data for Year {}".format(year+1))
+        return 0

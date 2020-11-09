@@ -173,10 +173,13 @@ def pieChart(request):
     return render(request, 'pieChart.html', context=context)
 
 def refreshData(request):
-    f_year = int(request.POST['year'])
-    tf_status = refresh_data(f_year)
-    context = {'tf_status':tf_status}
-    return redirect(request, 'index.html', context)
+    if request.method == 'POST':
+        f_year = int(request.POST['year'])
+        tf_status = refresh_data(f_year)
+        context = {'tf_status':tf_status}
+    else:
+        context = {'tf_statis':0}
+    return render(request, 'index.html', context)
     
 
 

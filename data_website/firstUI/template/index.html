@@ -43,13 +43,24 @@
  <!-- script for alert message if data is updated -->
 <script type="text/javascript">
     var alrt = {{ alrt | safe }};
-    var tf_status = {{ tf_status | safe }}; 
+    console.log(alrt)
+
     if (alrt == 1) {
         alert('Your Data Is Updated successfully!');
     };
+ 
+</script>
+
+ <!-- script for alert message if data is refreshed -->
+ <script type="text/javascript">
+    
+    var tf_status = {{ tf_status | safe }};
+    console.log(tf_status)
     if (tf_status == 1) {
         alert('Your Data Is Refreshed Successfully!');
     };
+
 </script>
+
 
 {% endblock %}

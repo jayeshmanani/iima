@@ -1,0 +1,119 @@
+,country_id,country_code,country_name,default_hist,region
+0,AF,AFG,Afghanistan,0,South Asia
+1,AO,AGO,Angola,0,Sub-Saharan Africa
+2,AL,ALB,Albania,0,Europe and Central Asia
+3,AE,ARE,United Arab Emirates,0,Middle East and North Africa
+4,AR,ARG,Argentina,1,Latin America & the Caribbean
+5,AM,ARM,Armenia,0,Europe and Central Asia
+6,AZ,AZE,Azerbaijan,0,Europe and Central Asia
+7,BI,BDI,Burundi,0,Sub-Saharan Africa
+8,BJ,BEN,Benin,0,Sub-Saharan Africa
+9,BF,BFA,Burkina Faso,0,Sub-Saharan Africa
+10,BD,BGD,Bangladesh,0,South Asia
+11,BG,BGR,Bulgaria,0,Europe and Central Asia
+12,BH,BHR,Bahrain,0,Middle East and North Africa
+13,BA,BIH,Bosnia and Herzegovina,0,Europe and Central Asia
+14,BY,BLR,Belarus,0,Europe and Central Asia
+15,BO,BOL,Bolivia,0,Latin America & the Caribbean
+16,BR,BRA,Brazil,0,Latin America & the Caribbean
+17,BT,BTN,Bhutan,0,South Asia
+18,BW,BWA,Botswana,0,Sub-Saharan Africa
+19,CF,CAF,Central African Republic,0,Sub-Saharan Africa
+20,CL,CHL,Chile,0,Latin America & the Caribbean
+21,CN,CHN,China,0,East Asia and Pacific
+22,CI,CIV,Côte d'Ivoire,0,Sub-Saharan Africa
+23,CM,CMR,Cameroon,0,Sub-Saharan Africa
+24,CD,COD,Democratic Republic of the Congo,0,Sub-Saharan Africa
+25,CG,COG,Republic of Congo,0,Sub-Saharan Africa
+26,CO,COL,Colombia,0,Latin America & the Caribbean
+27,CR,CRI,Costa Rica,0,Latin America & the Caribbean
+28,DO,DOM,Dominican Republic,1,Latin America & the Caribbean
+29,DZ,DZA,Algeria,0,Middle East and North Africa
+30,EC,ECU,Ecuador,0,Latin America & the Caribbean
+31,EG,EGY,Egypt,0,Middle East and North Africa
+32,ER,ERI,Eritrea,0,Sub-Saharan Africa
+33,ET,ETH,Ethiopia,0,Sub-Saharan Africa
+34,FJ,FJI,Fiji,0,East Asia and Pacific
+35,GA,GAB,Gabon,1,Sub-Saharan Africa
+36,GE,GEO,Georgia,0,Europe and Central Asia
+37,GH,GHA,Ghana,0,Sub-Saharan Africa
+38,GN,GIN,Guinea,0,Sub-Saharan Africa
+39,GM,GMB,The Gambia,0,Sub-Saharan Africa
+40,GW,GNB,Guinea-Bissau,0,Sub-Saharan Africa
+41,GQ,GNQ,Equatorial Guinea,0,Sub-Saharan Africa
+42,GT,GTM,Guatemala,0,Latin America & the Caribbean
+43,GY,GUY,Guyana,0,Latin America & the Caribbean
+44,HN,HND,Honduras,0,Latin America & the Caribbean
+45,HR,HRV,Croatia,0,Europe and Central Asia
+46,HT,HTI,Haiti,0,Latin America & the Caribbean
+47,HU,HUN,Hungary,0,Europe and Central Asia
+48,ID,IDN,Indonesia,1,East Asia and Pacific
+49,IN,IND,India,0,South Asia
+50,IR,IRN,Islamic Republic of Iran,0,Middle East and North Africa
+51,JM,JAM,Jamaica,0,Latin America & the Caribbean
+52,JO,JOR,Jordan,0,Middle East and North Africa
+53,KZ,KAZ,Kazakhstan,0,Europe and Central Asia
+54,KE,KEN,Kenya,0,Sub-Saharan Africa
+55,KG,KGZ,Kyrgyz Republic,0,Europe and Central Asia
+56,KH,KHM,Cambodia,0,East Asia and Pacific
+57,KW,KWT,Kuwait,0,Middle East and North Africa
+58,LA,LAO,Lao P.D.R.,0,East Asia and Pacific
+59,LB,LBN,Lebanon,0,Middle East and North Africa
+60,LR,LBR,Liberia,0,Sub-Saharan Africa
+61,LY,LBY,Libya,0,Middle East and North Africa
+62,LK,LKA,Sri Lanka,0,South Asia
+63,LS,LSO,Lesotho,0,Sub-Saharan Africa
+64,MA,MAR,Morocco,0,Middle East and North Africa
+65,MD,MDA,Moldova,1,Europe and Central Asia
+66,MG,MDG,Madagascar,0,Sub-Saharan Africa
+67,MV,MDV,Maldives,0,South Asia
+68,MX,MEX,Mexico,0,Latin America & the Caribbean
+69,MK,MKD,North Macedonia,0,Europe and Central Asia
+70,ML,MLI,Mali,0,Sub-Saharan Africa
+71,MM,MMR,Myanmar,0,East Asia and Pacific
+72,MN,MNG,Mongolia,0,East Asia and Pacific
+73,MZ,MOZ,Mozambique,0,Sub-Saharan Africa
+74,MR,MRT,Mauritania,0,Sub-Saharan Africa
+75,MW,MWI,Malawi,0,Sub-Saharan Africa
+76,MY,MYS,Malaysia,0,East Asia and Pacific
+77,NA,NAM,Namibia,0,Sub-Saharan Africa
+78,NE,NER,Niger,0,Sub-Saharan Africa
+79,NG,NGA,Nigeria,0,Sub-Saharan Africa
+80,NI,NIC,Nicaragua,0,Latin America & the Caribbean
+81,NP,NPL,Nepal,0,South Asia
+82,OM,OMN,Oman,0,Middle East and North Africa
+83,PK,PAK,Pakistan,0,South Asia
+84,PA,PAN,Panama,0,Latin America & the Caribbean
+85,PE,PER,Peru,0,Latin America & the Caribbean
+86,PH,PHL,Philippines,0,East Asia and Pacific
+87,PG,PNG,Papua New Guinea,0,East Asia and Pacific
+88,PL,POL,Poland,0,Europe and Central Asia
+89,PY,PRY,Paraguay,1,Latin America & the Caribbean
+90,QA,QAT,Qatar,0,Middle East and North Africa
+91,RO,ROU,Romania,0,Europe and Central Asia
+92,RU,RUS,Russia,0,Europe and Central Asia
+93,RW,RWA,Rwanda,0,Sub-Saharan Africa
+94,SA,SAU,Saudi Arabia,0,Middle East and North Africa
+95,SD,SDN,Sudan,0,Sub-Saharan Africa
+96,SN,SEN,Senegal,0,Sub-Saharan Africa
+97,SL,SLE,Sierra Leone,0,Sub-Saharan Africa
+98,SV,SLV,El Salvador,0,Latin America & the Caribbean
+99,RS,SRB,Serbia,0,Europe and Central Asia
+100,SR,SUR,Suriname,0,Latin America & the Caribbean
+101,SY,SYR,Syria,0,Middle East and North Africa
+102,TD,TCD,Chad,0,Sub-Saharan Africa
+103,TG,TGO,Togo,0,Sub-Saharan Africa
+104,TH,THA,Thailand,0,East Asia and Pacific
+105,TJ,TJK,Tajikistan,0,Europe and Central Asia
+106,TT,TTO,Trinidad and Tobago,0,Latin America & the Caribbean
+107,TN,TUN,Tunisia,0,Middle East and North Africa
+108,TR,TUR,Turkey,0,Europe and Central Asia
+109,TZ,TZA,Tanzania,0,Sub-Saharan Africa
+110,UG,UGA,Uganda,0,Sub-Saharan Africa
+111,UA,UKR,Ukraine,0,Europe and Central Asia
+112,UY,URY,Uruguay,1,Latin America & the Caribbean
+113,VE,VEN,Venezuela,1,Latin America & the Caribbean
+114,VN,VNM,Vietnam,0,East Asia and Pacific
+115,YE,YEM,Yemen,0,Middle East and North Africa
+116,ZA,ZAF,South Africa,0,Sub-Saharan Africa
+117,ZM,ZMB,Zambia,0,Sub-Saharan Africa
