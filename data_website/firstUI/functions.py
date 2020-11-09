@@ -1,4 +1,4 @@
-from operator import index
+# from operator import index
 import pandas as pd
 import requests
 import dbnomics
@@ -26,131 +26,81 @@ except:
     final_df = pd.read_csv(my_file2)
     final_df.to_pickle(my_file)
 
+
 ''' 
 
 weo_data() function can fetch the data for Following variables
 
 1) General government net lending/borrowing - GGXCNL_NGDP
 2) General government gross debt - GGXWDG_NGDP
-3) Inflation, average consumer prices	- PCPIPCH
-4) Volume of exports of goods and services - TX_RPCH
-5) Gross national savings	= NGSD_NGDP
+3) Gross national savings	= NGSD_NGDP
+4) Inflation, average consumer prices	- PCPIPCH
+5) Volume of exports of goods and services - TX_RPCH
 
 returns as list contains values as follows in sequence [GGXCNL_NGDP, GGXWDG_NGDP, NGSD_NGDP, PCPIPCH, TX_RPCH]
 
 '''
 @ray.remote
-def weo_data(year):
-    # values_ed = []
+def weo_data(year, fnc):
     country_string = ''
     for country in final_df['country_code']:
         country_string+="+"+country
     country_string = country_string[1:]
 
-    fnc = 'GGXCNL_NGDP+GGXWDG_NGDP+PCPIPCH+TX_RPCH+NGSD_NGDP'
-    sr_code = country_string+'.'+fnc
-    month = datetime.datetime.today().month
-    if month >=10 or month < 4:
-        month = '10'
-    elif month >= 4 or month < 10:
-        month = '04'
+    try:
+        sr_code = country_string+'.'+fnc
+        month = datetime.datetime.today().month
+        if month >=10 or month < 4:
+            month = '10'
+        elif month >= 4 or month < 10:
+            month = '04'
+        try:
+            data = dbnomics.fetch_series("IMF", f"WEO:{year}-{month}", series_code=sr_code, max_nb_series=1000)
+        except:
+            month = '04'
+            data = dbnomics.fetch_series("IMF", f"WEO:{year}-{month}", series_code=sr_code, max_nb_series=1000)
+        current_year_data = data.query('period=='+str(year))
+        before_1_year_data = data.query('period=='+str(year-1))
 
-    data = dbnomics.fetch_series("IMF", f'WEO:{year}-{month}', series_code=sr_code, max_nb_series=1000)
+        '''
+        country_name as key and values as list contains [GGXCNL_NGDP, GGXWDG_NGDP, NGSD_NGDP, PCPIPCH, TX_RPCH]
+        '''
+        dict_values = {}
 
-    current_year_data = data.query('period=='+str(year))
-    before_1_year_data = data.query('period=='+str(year-1))
-    # before_2_year_data = data.query('period=='+str(year-2))
-    # before_3_year_data = data.query('period=='+str(year-3))
+        vlist = []
 
-    '''
-    country_name as key and values as list contains [GGXCNL_NGDP, GGXWDG_NGDP, NGSD_NGDP, PCPIPCH, TX_RPCH]
-    '''
+        for country in final_df.country_code:
+            cd1 = current_year_data[current_year_data['weo-country'] == country]
+            cd2 = before_1_year_data[before_1_year_data['weo-country'] == country]
+    #         cd3 = before_2_year_data[before_2_year_data['weo-country'] == country]
+    #         cd4 = before_3_year_data[before_3_year_data['weo-country'] == country]
+            if cd1.empty:
+                v1 = [None]
+            else:
+                v1 = list(cd1['value'].values)
+            if cd2.empty:
+                v2 = [None]
+            else:
+                v2 = list(cd2['value'].values)
 
-    dict_values_ggxc = {}
-    dict_values_ggxw = {}
-    dict_values_ngsd = {}
-    dict_values_pcpi = {}
-    dict_values_txrp = {}
-
-
-    vlist1 = []
-    vlist2 = []
-    vlist3 = []
-    vlist4 = []
-    vlist5 = []
-
-    for country in final_df.country_code:
-        cd1 = current_year_data[current_year_data['weo-country'] == country]
-        cd2 = before_1_year_data[before_1_year_data['weo-country'] == country]
-        # cd3 = before_2_year_data[before_2_year_data['weo-country'] == country]
-        # cd4 = before_3_year_data[before_3_year_data['weo-country'] == country]
-        if cd1.empty:
-            v1 = [None,None,None,None,None]
+        
+            for num, ver in enumerate([v1,v2]):
+                if ver[0] == None or str(ver[0]) == 'nan':
+                    if num ==1:
+                        dict_values[country] = ver[0]
+                    else:
+                        continue
+                else:
+                    dict_values[country] = ver[0]
+                    break
+            vlist.append(dict_values[country])
+        if type(vlist)!=type(None):
+            vlist = vlist
         else:
-            v1 = list(cd1['value'].values)
-        if cd2.empty:
-            v2 = [None,None,None,None,None]
-        else:
-            v2 = list(cd2['value'].values)
-
-        for num, ver in enumerate([v1,v2]):
-            if ver[0] == None or str(ver[0]) == 'nan':
-                if num ==1:
-                    dict_values_ggxc[country] = ver[0]  
-                else:
-                    continue
-            else:
-                dict_values_ggxc[country] = ver[0]
-                break
-
-        for num, ver in enumerate([v1,v2]):
-            if ver[1] == None or str(ver[1]) == 'nan':
-                if num ==1:
-                    dict_values_ggxw[country] = ver[1]
-                else:
-                    continue
-            else:
-                dict_values_ggxw[country] = ver[1]
-                break
-
-        for num, ver in enumerate([v1,v2]):
-            if ver[2] == None or str(ver[2]) == 'nan':
-                if num ==1:
-                    dict_values_ngsd[country] = ver[2]
-                else:
-                    continue
-            else:
-                dict_values_ngsd[country] = ver[2]
-                break
-
-        for num, ver in enumerate([v1,v2]):
-            if ver[3] == None or str(ver[3]) == 'nan':
-                if num ==1:
-                    dict_values_pcpi[country] = ver[3]
-                else:
-                    continue
-            else:
-                dict_values_pcpi[country] = ver[3]
-                break
-
-        for num, ver in enumerate([v1,v2]):
-            if ver[4] == None or str(ver[4]) == 'nan':
-                if num ==1:
-                    dict_values_txrp[country] = ver[4]
-                else:
-                    continue
-            else:
-                dict_values_txrp[country] = ver[4]
-                break
-
-        vlist1.append(dict_values_ggxc[country])
-        vlist2.append(dict_values_ggxw[country])
-        vlist3.append(dict_values_ngsd[country])
-        vlist4.append(dict_values_pcpi[country])
-        vlist5.append(dict_values_txrp[country])
-
-    return [vlist1, vlist2, vlist3, vlist4, vlist5]
-
+            vlist = [None]*118
+        return vlist
+    except:
+        return [None]*118
 
 '''
 
@@ -303,7 +253,11 @@ def fetch_data(year):
             final_dfd = pd.read_pickle(my_file2)
             final_df.to_pickle(my_file)
         if c_year >= year:
-            ret_id1 = weo_data.remote(year)
+            ret_weo_id1 = weo_data.remote(year,'GGXCNL_NGDP')
+            ret_weo_id2 = weo_data.remote(year, 'GGXWDG_NGDP')
+            ret_weo_id3 = weo_data.remote(year, 'NGSD_NGDP')
+            ret_weo_id4 = weo_data.remote(year, 'PCPIPCH')
+            ret_weo_id5 = weo_data.remote(year, 'TX_RPCH')
             ret_id2 = wb_data.remote(year, 'DT.DOD.DECT.CD')
             ret_id3 = wb_data.remote(year, 'NE.EXP.GNFS.CD')
             ret_id4 = pol_data.remote(year, 'PV.EST')
@@ -319,7 +273,7 @@ def fetch_data(year):
 
             ret_id13 = LL_GDP_data.remote(year)
 
-            [fiscal_balance_gdp, government_grossdebt_gdp, savings_gdp, inflation_data, exports_growth], externaldebt, exports, political_stability, reserves, real_gdppc, rule_of_law, imports, real_gdpgrowth, govt_effectiveness, real_gnipc, nominal_gdp, m3_gdp = ray.get([ret_id1, ret_id2, ret_id3, ret_id4, ret_id5, ret_id6, ret_id7, ret_id8, ret_id9, ret_id10, ret_id11, ret_id12, ret_id13])
+            fiscal_balance_gdp, government_grossdebt_gdp, savings_gdp, inflation_data, exports_growth, externaldebt, exports, political_stability, reserves, real_gdppc, rule_of_law, imports, real_gdpgrowth, govt_effectiveness, real_gnipc, nominal_gdp, m3_gdp = ray.get([ret_weo_id1, ret_weo_id2, ret_weo_id3, ret_weo_id4, ret_weo_id5, ret_id2, ret_id3, ret_id4, ret_id5, ret_id6, ret_id7, ret_id8, ret_id9, ret_id10, ret_id11, ret_id12, ret_id13])
 
             lt_118 = []
             ind_lst = [fiscal_balance_gdp, government_grossdebt_gdp, inflation_data, exports_growth, savings_gdp, externaldebt,
@@ -378,13 +332,13 @@ def check_if_data(year):
         df.rename(columns={'country_id_id':'id'}, inplace=True)
         df2 = pd.DataFrame(list(Country.objects.all().values()))
         data = pd.merge(df2,df,how='outer', on='id')
-        # return data
+        return data
     else:
         print("Data is not there so, fetching from API's")
         data = fetch_data(year)
         
         # data.to_pickle(data_file)
-        
+        # print("Length of dataset is".format(len(data)))
         dts = data.values
         for enm, test in enumerate(dts):    
             cnn = Country.objects.filter(country_name = test[2])
@@ -419,8 +373,8 @@ def check_if_data(year):
                         show = True                                                                                            
                         )  
             fn.save()
-    return data
-
+        return data
+    
 def refresh_data(year):
     year = year - 1
     c_year = datetime.datetime.today().year 

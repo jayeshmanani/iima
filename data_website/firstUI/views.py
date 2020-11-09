@@ -22,18 +22,21 @@ def indexPage(request):
 def year(request):
     f_year = int(request.POST['year'])
     data = check_if_data(f_year)
-    if 'show' in data.columns:
-        data = data[data['show'] == True]
-    data_as_str = data.applymap(str)
-    html = data_as_str.to_html()
-    text_file = open("firstUI/template/df.html", "w")
-    text_file.write("{% extends 'base.html' %} {% block content %}")
-    text_file.write(html)
-    text_file.write("{% endblock %}")
-    text_file.close()
-    
-    # context = {'year':f_year, 'html':html}    
-    return render(request,'df.html')
+    try:
+        if 'show' in data.columns:
+            data = data[data['show'] == True]
+        data_as_str = data.applymap(str)
+        html = data_as_str.to_html()
+        text_file = open("firstUI/template/df.html", "w")
+        text_file.write("{% extends 'base.html' %} {% block content %}")
+        text_file.write(html)
+        text_file.write("{% endblock %}")
+        text_file.close()
+        
+        # context = {'year':f_year, 'html':html}    
+        return render(request,'df.html')
+    except:
+        return render(request, 'index.html')
 
 def graph(request):
     f_year = int(request.POST['year'])
