@@ -8,7 +8,6 @@ admin.site.register(Country)
 admin.site.register(FinanceData)
 
 
-
 # from this website -> https://medium.com/analytics-vidhya/create-a-fullstack-app-with-django-graphql-and-vuejs-727a0cf41820
 
 # from django.contrib import admin

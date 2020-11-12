@@ -1,11 +1,11 @@
 from django.http import request
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from firstUI.functions import check_if_data, refresh_data
+from .functions import check_if_data, refresh_data #from firstUI.functions import check_if_data, refresh_data
 import datetime
 import pandas as pd
-from firstUI.models import FinanceData
-from firstUI.models import Country
+from .models import FinanceData # from firstUI.models import FinanceData
+from .models import Country # from firstUI.models import Country
 
 
 d_wmap = pd.read_json('https://cdn.jsdelivr.net/gh/highcharts/highcharts@v7.0.0/samples/data/world-population-density.json')

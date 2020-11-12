@@ -10,8 +10,8 @@ import os
 import ray
 import time
 from os import path
-from firstUI.models import FinanceData
-from firstUI.models import Country
+from .models import FinanceData #from firstUI.models import FinanceData
+from .models import Country # from firstUI.models import Country
 import sqlite3
 
 
