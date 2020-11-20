@@ -11,7 +11,15 @@
         <form method="POST" action="/pieChart">
             {% csrf_token %}
 
-            <label for="piePlts">Pie Chart For:</label>
+            Pie Chart for Year: <select name='year' id="ddlYears" ></select>
+
+            Country <select id="cntry" name='country'>
+              {% for country in country_l %}
+                  <option value='{{country.country_name}}'>{{ country.country_name }}</option>
+              {% endfor %}
+            </select>
+
+            <!-- <label for="piePlts">Pie Chart For:</label> -->
             <select id="piePlts" name="piePlts">
                 <option value="debtDistressProb">Debt Distress Probability</option>
                 <option value="specGradeProb">Speculative Grade Probability</option>
@@ -21,55 +29,72 @@
     </span>
 </div>
 <hr>
+
 <div id="container" style="width: 80%; margin:0% 10% 0% 10%;">
     <canvas id="pie-chart"></canvas>
-  </div>
+</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/emn178/chartjs-plugin-labels/src/chartjs-plugin-labels.js"></script>
-  <script>
-    var pie_title = ( {{is_pie_Debt|safe}} ? 'Pie chart for Debt Distress Probability':'Pie chart for Speculative Grade Probability');
-    var config = {
-      type: 'pie',
-      data: {
-        datasets: [{
-          data: {{ data|safe }},
-          backgroundColor: ["#001f3f", "#0074D9","#7FDBFF", "#FF4136", "#2ECC40", "#FF851B",  "#B10DC9", "#FFDC00", "#39CCCC", "#01FF70", "#85144b", "#F012BE", "#3D9970", "#111111", "#AAAAAA"],
-          borderColor: "white"
-        }],
-        labels: {{ labels|safe }}
+
+<!-- <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script> -->
+<script src="https://cdn.jsdelivr.net/gh/emn178/chartjs-plugin-labels/src/chartjs-plugin-labels.js"></script>
+<script>
+  var pie_title = ( {{is_pie_Debt|safe}} ? 'Pie chart for Debt Distress Probability':'Pie chart for Speculative Grade Probability');
+  var config = {
+    type: 'pie',
+    data: {
+      datasets: [{
+        data: {{ data|safe }},
+        backgroundColor: ["#001f3f", "#0074D9","#7FDBFF", "#FF4136", "#2ECC40", "#FF851B",  "#B10DC9", "#FFDC00", "#39CCCC", "#01FF70", "#85144b", "#F012BE", "#3D9970", "#111111", "#AAAAAA"],
+        borderColor: "white"
+      }],
+      labels: {{ labels|safe }}
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      title:{
+          display: true,
+          text: pie_title
       },
-      options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        title:{
-            display: true,
-            text: pie_title
+      plugins: {
+          labels: {
+            render: 'percentage',
+            fontColor: {{fontColour|safe}},
+            precision: 2,
+            showZero: true,
+            textShadow: true,
+            shadowOffsetX: -5,
+            shadowOffsetY: 5,
+            position: "outside",
+            overlap: true,
+            showActualPercentages: true,
+            outsidePadding: 4,
+            textMargin: 4
+          }
         },
-        plugins: {
-            labels: {
-              render: 'percentage',
-              fontColor: {{fontColour|safe}},
-              precision: 2,
-              showZero: true,
-              textShadow: true,
-              shadowOffsetX: -5,
-              shadowOffsetY: 5,
-              position: "outside",
-              overlap: true,
-              showActualPercentages: true,
-              outsidePadding: 4,
-              textMargin: 4
-            }
-          },
-        }
-    };
+      }
+  };
 
-    window.onload = function() {
-      var ctx = document.getElementById('pie-chart').getContext('2d');
-      window.myPie = new Chart(ctx, config);
-    };
+  window.onload = function() {
+    var ctx = document.getElementById('pie-chart').getContext('2d');
+    window.myPie = new Chart(ctx, config);
 
-  </script>
+    //Reference the DropDownList.
+    var ddlYears = document.getElementById("ddlYears");
+    //Determine the Current Year.
+    var currentYear = (new Date()).getFullYear();
+
+    //Loop and add the Year values to DropDownList.
+    for (var i = currentYear; i >= 1980; i--) {
+        var option = document.createElement("OPTION");
+        option.innerHTML = i;
+        option.value = i;
+        ddlYears.appendChild(option);
+    }
+  };
+
+</script>
+
+
 
 {% endblock %}
