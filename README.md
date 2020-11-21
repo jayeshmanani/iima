@@ -1,5 +1,9 @@
 # IIM Ahmedabad - Website for Data Analysis
-This Repo contains the projects done at IIM Ahmedabad.
+This Repo contains the projects done at IIM Ahmedabad. 
+
+Link to the GitHub Repo: https://github.com/jayeshmanani/iima
+
+If you can't see this instruction properly on your local pc/laptop please follow the link for view instruction properly: https://github.com/jayeshmanani/iima/blob/main/README.md
 
 - The main project is inside the data_website folder. It is made using Django framework. You can run it after installing the dependencies use this command to run the project.
 
