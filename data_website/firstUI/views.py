@@ -165,7 +165,11 @@ def pieChart(request):
     data = debt_data
     fontColour = ["black"]
     fontColour = fontColour*10
+    passed_cntr = 0
+    context = {'is_pie_Debt':is_pie_Debt, 'labels':labels, 'data':data, 'fontColour':fontColour, 'country_l':country_l, 'passed_cntr':passed_cntr}
+    
     if request.method == 'POST':
+        passed_cntr = 1
         yr = int(request.POST['year'])
         # yr -= 1
         cntr = request.POST['country']
@@ -196,6 +200,7 @@ def pieChart(request):
             spec_fetched = [dtt.log_real_gnipc, dtt.savings_gdp, dtt.rule_of_law, dtt.government_grossdebt_gdp]
             for enm, spc in enumerate(spec_fetched):
                 if (type(spc.values[0]) != type(None)) and (str(spc.values[0]) != 'nan'):
+                    print(spc.values[0])
                     data2.append(spec_data[enm] * spc.values[0])
                 else:
                     data2.append(spec_data[enm])
@@ -203,7 +208,7 @@ def pieChart(request):
             
             labels = spec_labels
 
-            # print("This is spec data : ", data)
+            print("This is spec data : ", data)
 
         elif vals == 'debtDistressProb':
             # first model in debt distress
@@ -221,15 +226,15 @@ def pieChart(request):
                         data2.append(debt_data[enm] * 1)
                     else:
                         data2.append(debt_data[enm] * 0)
-                elif (type(debt.values[0]) != type(None)):
+                elif (type(debt.values[0]) != type(None)) and (str(debt.values[0]) != 'nan'):
+                    print(debt.values[0])
                     data2.append(debt_data[enm] * debt.values[0])
                 else:
                     data2.append(debt_data[enm])
             data = data2 #second model - individual values multiply
 
-            # print("This is debt data : ",data)
-
-    context = {'is_pie_Debt':is_pie_Debt, 'labels':labels, 'data':data, 'fontColour':fontColour, 'country_l':country_l}
+            print("This is debt data : ",data)
+        context = {'is_pie_Debt':is_pie_Debt, 'labels':labels, 'data':data, 'fontColour':fontColour, 'country_l':country_l, 'cntr':str(cntr), 'passed_cntr':passed_cntr, 'yr':yr}
     return render(request, 'pieChart.html', context=context)
 
 def refreshData(request):

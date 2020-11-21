@@ -38,7 +38,24 @@
 <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"></script> -->
 <script src="https://cdn.jsdelivr.net/gh/emn178/chartjs-plugin-labels/src/chartjs-plugin-labels.js"></script>
 <script>
-  var pie_title = ( {{is_pie_Debt|safe}} ? 'Pie chart for Debt Distress Probability':'Pie chart for Speculative Grade Probability');
+  var passed_cntr = {{passed_cntr|safe}};
+  var cntry = "{{cntr | safe}}";
+  var yr = " - {{yr|safe}}"
+  console.log(passed_cntr)
+  var pref = 'Pie chart for ';
+  var posf1 = ' - Debt Distress Probability';
+  var posf2 = ' - Speculative Grade Probability';
+  var postf = ( {{is_pie_Debt|safe}} ? posf1 : posf2 )
+  if (passed_cntr == 1) {
+    var res = pref.concat(cntry, postf, yr);
+    console.log(res)
+    }
+  else{
+    var res = pref.concat(postf) 
+  };
+/*  var pie_title = ( {{is_pie_Debt|safe}} ? 'Pie chart for Debt Distress Probability':'Pie chart for Speculative Grade Probability'); */
+/*  var pie_title = ( {{is_pie_Debt|safe}} ? res :'Pie chart for '); */
+var pie_title = res
   var config = {
     type: 'pie',
     data: {
