@@ -12,13 +12,143 @@ from .models import Country # from firstUI.models import Country
 d_wmap = pd.read_json('https://cdn.jsdelivr.net/gh/highcharts/highcharts@v7.0.0/samples/data/world-population-density.json')
 
 def indexPage(request):
-    # tf_status = 0
-    # cntry = Country.objects.all()
-    # country_list = []
-    # for i in cntry:
-    #     country_list.append(i.country_name)
-    # context = {'country_list':country_list, 'tf_status':tf_status}
-    return render(request, 'index.html') #, context)
+    is_debt_distress = 1
+    is_post = 0
+    is_native_barp = 0
+    if request.method =='POST':
+        is_post = 1
+        # this is for the bar plot
+        whc_plt = request.POST['which_plt'] 
+        if whc_plt == 'bPlot':
+            is_native_barp = 1    
+            f_year = int(request.POST['year'])
+            data = check_if_data(f_year)
+            for_which = str(request.POST['barPlts'])
+            rgn = request.POST['region']
+            is_debt_distress = 1
+            data = check_if_data(f_year)
+            if 'show' in data.columns:
+                data = data[data['show'] == True]
+            country_name = []
+            barplotVal = []
+
+            if rgn == 'global':
+                data = data
+            elif rgn == 'eastAsia':
+                data = data[data.region == "East Asia and Pacific"]
+            elif rgn == 'europe':
+                data = data[data.region == "Europe and Central Asia"]
+            elif rgn == 'latinAmerica':
+                data = data[data.region == "Latin America & the Caribbean"]
+            elif rgn == 'middleEast':
+                data = data[data.region == "Middle East and North Africa"]
+            elif rgn == 'northAmerica':
+                data = data[data.region == "North America"]
+            elif rgn == 'southAsia':
+                data = data[data.region == "South Asia"]
+            elif rgn == 'saharanAfrica':
+                data = data[data.region == "Sub-Saharan Africa"]
+
+            if for_which == 'debtDistressProb':
+                data = data[['country_name','Debt_Distress_prob']].sort_values(by=['Debt_Distress_prob'], ascending=False).dropna()
+                country_name = data.country_name.to_list()
+                barplotVal = data.Debt_Distress_prob.to_list()
+                barplotVal = list(pd.Series(barplotVal).apply(lambda x: np.round(x, decimals=2)))
+            elif for_which == 'specGradeProb':
+                data = data[['country_name','Speculative_Grade_Prob']].sort_values(by=['Speculative_Grade_Prob'], ascending=False).dropna()
+                country_name = data.country_name.to_list()
+                barplotVal = data.Speculative_Grade_Prob.to_list()
+                barplotVal = list(pd.Series(barplotVal).apply(lambda x: np.round(x, decimals=2)))
+                is_debt_distress = 0
+
+            dataForMapGraph = []
+            f_year2 = datetime.date.today().year
+            data2 = check_if_data(f_year2)
+            if 'show' in data2.columns:
+                data2 = data2[data2['show'] == True]
+            data2 = data2[['country_code','Debt_Distress_prob']].rename(columns={'country_code':'code3','Debt_Distress_prob':'value'})
+            is_spec_worldPlot = 0
+            data2.value = data2.value * 100
+            data2.value = data2.value.apply(lambda x: np.round(x, decimals=2))
+            ft = d_wmap.drop(columns=['value']).merge(data2, on='code3', how='left')[['code3','name','value','code']].fillna(0)
+            
+            for i in range(len(ft)):
+                dataForMapGraph.append({"code3": ft.iloc[i]['code3'],
+                    "name": ft.iloc[i]['name'],
+                    "value": ft.iloc[i]['value'],
+                    "code": ft.iloc[i]['code']})
+
+            context = {'is_native_barp':is_native_barp, 'is_post':is_post, 'is_debt_distress':is_debt_distress, 'barplotVal':barplotVal, 'country_name':country_name, 'year':f_year, 'is_spec_worldPlot':is_spec_worldPlot,'dataForMapGraph':dataForMapGraph} #, 'maxVal':maxVal}    
+            # context = {'year':f_year, 'country_name':country_name, 'barplotVal':barplotVal, 'is_debt_distress':is_debt_distress}
+        elif whc_plt == 'wPlot':
+            which_wplot = str(request.POST['worldPlot'])
+            f_year = int(request.POST['year'])
+            data = check_if_data(f_year)
+            if 'show' in data.columns:
+                data = data[data['show'] == True]
+            is_spec_worldPlot = 1
+            dataForMapGraph = []
+
+            if which_wplot == 'specGradeProb':
+            # f_year = int(request.POST['year'])
+                
+                data.Speculative_Grade_Prob	= data.Speculative_Grade_Prob * 100
+                data2 = data[['country_code','Speculative_Grade_Prob']].rename(columns={'country_code':'code3','Speculative_Grade_Prob':'value'})
+                data2.value = data2.value.apply(lambda x: np.round(x, decimals=2))
+                ft = d_wmap.drop(columns=['value']).merge(data2, on='code3', how='left')[['code3','name','value','code']].fillna(0)
+                
+                for i in range(len(ft)):
+                    dataForMapGraph.append({"code3": ft.iloc[i]['code3'],
+                        "name": ft.iloc[i]['name'],
+                        "value": ft.iloc[i]['value'],
+                        "code": ft.iloc[i]['code']})
+
+            elif which_wplot == 'debtDistressProb':
+                is_spec_worldPlot = 0
+                data.Debt_Distress_prob = data.Debt_Distress_prob * 100
+                data2 = data[['country_code','Debt_Distress_prob']].rename(columns={'country_code':'code3','Debt_Distress_prob':'value'})
+                data2.value = data2.value.apply(lambda x: np.round(x, decimals=2))
+                ft = d_wmap.drop(columns=['value']).merge(data2, on='code3', how='left')[['code3','name','value','code']].fillna(0)
+                
+                for i in range(len(ft)):
+                    dataForMapGraph.append({"code3": ft.iloc[i]['code3'],
+                        "name": ft.iloc[i]['name'],
+                        "value": ft.iloc[i]['value'],
+                        "code": ft.iloc[i]['code']})
+            f_year2 = datetime.date.today().year
+            data2 = check_if_data(f_year2)
+            if 'show' in data2.columns:
+                data2 = data2[data2['show'] == True]
+            data2 = data2[['country_name','Debt_Distress_prob']].sort_values(by=['Debt_Distress_prob'], ascending=False).dropna()
+            country_name2 = data2.country_name.to_list()
+            debt_barplotVal2 = data2.Debt_Distress_prob.fillna(0).to_list()
+            debt_barplotVal2 = list(pd.Series(debt_barplotVal2).apply(lambda x: np.round(x, decimals=2)))
+            context = {'is_native_barp':is_native_barp, 'is_post':is_post, 'is_debt_distress':is_debt_distress, 'barplotVal':debt_barplotVal2, 'country_name':country_name2, 'year':f_year, 'is_spec_worldPlot':is_spec_worldPlot,'dataForMapGraph':dataForMapGraph} #, 'maxVal':maxVal}    
+    else:
+        f_year = datetime.date.today().year
+        data = check_if_data(f_year)
+        if 'show' in data.columns:
+            data = data[data['show'] == True]
+        dataForMapGraph = []
+        data2 = data[['country_code','Debt_Distress_prob']].rename(columns={'country_code':'code3','Debt_Distress_prob':'value'})
+        data = data[['country_name','Debt_Distress_prob']].sort_values(by=['Debt_Distress_prob'], ascending=False).dropna()
+        country_name = data.country_name.to_list()
+        debt_barplotVal = data.Debt_Distress_prob.fillna(0).to_list()
+        debt_barplotVal = list(pd.Series(debt_barplotVal).apply(lambda x: np.round(x, decimals=2)))
+        
+        is_spec_worldPlot = 0
+        data2.value = data2.value * 100
+        data2.value = data2.value.apply(lambda x: np.round(x, decimals=2))
+        ft = d_wmap.drop(columns=['value']).merge(data2, on='code3', how='left')[['code3','name','value','code']].fillna(0)
+        
+        for i in range(len(ft)):
+            dataForMapGraph.append({"code3": ft.iloc[i]['code3'],
+                "name": ft.iloc[i]['name'],
+                "value": ft.iloc[i]['value'],
+                "code": ft.iloc[i]['code']})
+        context = {'is_native_barp':is_native_barp, 'is_post':is_post, 'is_debt_distress':is_debt_distress, 'barplotVal':debt_barplotVal, 'country_name':country_name, 'year':f_year, 'is_spec_worldPlot':is_spec_worldPlot,'dataForMapGraph':dataForMapGraph}    
+        # context = {'year':f_year, 'country_name':country_name, 'barplotVal':debt_barplotVal, 'is_debt_distress':is_debt_distress}
+    return render(request, 'index.html' , context=context)
 
 def year(request):
     f_year = int(request.POST['year'])
