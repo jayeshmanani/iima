@@ -8,7 +8,6 @@ import numpy as np
 from .models import FinanceData # from firstUI.models import FinanceData
 from .models import Country # from firstUI.models import Country
 
-
 d_wmap = pd.read_json('https://cdn.jsdelivr.net/gh/highcharts/highcharts@v7.0.0/samples/data/world-population-density.json')
 
 def indexPage(request):
