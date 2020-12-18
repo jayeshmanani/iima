@@ -31,24 +31,44 @@
     <div class="fixed-header">
         <div class="header">
             <nav>
-                <a href="/"><span>Risk Index DashBoard</span></a>
+                <a href="/"><span>Home</span></a>
                 <a href="/updateStatus">Update Data</a>
                 <!-- <a href="/pieChart">Pie Chart</a> -->
                 <a href="/admin">Admin Login</a>
             </nav>            
         </div>
     </div>  
-    <section style="margin-bottom: 90px;">
+    <section>
         {% block content %}
 
         {% endblock %}
     </section>
 </body>
+
 <footer class="fixed-footer">
-        <p class='footer-social'>&copy; Copyright 2020</p>
+        <!-- <p class='footer-social'>&copy; Copyright 2020</p> -->
         <a href="https://github.com/jayeshmanani" target="_blank"><i class="fa fa-github footer-social"></i></a>
         <a href="https://github.com/jayeshmanani" target="_blank"><i class="fa fa-github footer-social"></i></a>
         <a href="https://github.com/jayeshmanani" target="_blank"><i class="fa fa-github footer-social"></i></a>
         <a href="https://github.com/jayeshmanani" target="_blank"><i class="fa fa-github footer-social"></i></a>
 </footer>
+
+<script>
+    function footerAlign() {
+        $('footer').css('height', 'auto');
+        var footerHeight = $('footer').outerHeight();
+        $('body').css('padding-bottom', footerHeight);
+        $('footer').css('height', footerHeight);
+      }
+      
+      
+      $(document).ready(function(){
+        footerAlign();
+      });
+      
+      $( window ).resize(function() {
+        footerAlign();
+      });
+      
+</script>
 </html>

@@ -4,7 +4,7 @@
 
 <div>
     <span class="selection">
-        <h4>Risk Index Data</h4> 
+        <h3>External Vulnerability Index and Sovereign Risk Assessment</h3> 
     </span>
 
     <span class="selection">
@@ -18,37 +18,11 @@
             <input type="submit" value="Refresh Data" onclick="javascript: form.action='/refreshData';">
         </form>
     </span>
-<br>
-    <span class="selection">
-        <form action="/" method="POST">
-            {% csrf_token %}
-            <label for="barPlts">Bar Plot For:</label>
-            Year: <select name='year' id="ddlYears1" ></select>
-            <select id="barPlts" name="barPlts">
-                <option value="debtDistressProb">Debt Distress Probability</option>
-                <option value="specGradeProb">Speculative Grade Probability</option>
-            </select>
 
-            <!-- <label for="regions">Bar Plot For Region:</label> --> 
-            <select id="region" name="region">
-                <option value="global">Global</option>
-                <option value="eastAsia">East Asia and Pacific</option>
-                <option value="europe">Europe and Central Asia</option>
-                <option value="latinAmerica">Latin America & the Caribbean</option>
-                <option value="middleEast">Middle East and North Africa</option>
-                <option value="northAmerica">North America</option>
-                <option value="southAsia">South Asia</option>
-                <option value="saharanAfrica">Sub-Saharan Africa</option>
-            </select>
-            <input id="which_plt" name="which_plt" type="hidden" value="bPlot">
-            <input type="submit" value="View Bar Plot">
-        </form>
-    </span>
-<br>
     <span class="selection">
         <form action="/" method="POST">
             {% csrf_token %}
-            <label for="worldPlt">World Map For:</label>
+            <!-- <label for="worldPlt">World Map For:</label> -->
             Year: <select name='year' id="ddlYears2" ></select>
             <select id="worldPlot" name="worldPlot">
                 <option value="debtDistressProb">Debt Distress Probability</option>
@@ -64,11 +38,11 @@
 <hr>
 
 {% if not is_post or is_native_barp%}
-<h4 style="display: flex; justify-content: center; align-items: center;"> Map for Developing Countries <script type="text/javascript">document.write(new Date().getFullYear());</script></h4>
+<h4 style="display: flex; justify-content: center; align-items: center;"> Developing Countries <script type="text/javascript">document.write(new Date().getFullYear());</script></h4>
 {% endif %}
 
 {% if is_post and not is_native_barp%}
-<h4 style="display: flex; justify-content: center; align-items: center;"> Map for Developing Countries {{year}}</h4>
+<h4 style="display: flex; justify-content: center; align-items: center;"> Developing Countries {{year}}</h4>
 {% endif %}
 
 <div style="margin: 20px; width: 1380px; height: 550px;" id="mapChart"> </div> </div>
@@ -76,21 +50,50 @@
 <br>
 <hr>
 
+<span class="selection chart-form">
+    <form action="/" method="POST">
+        {% csrf_token %}
+        <!-- <label for="barPlts">Bar Plot For:</label> -->
+        Year: <select name='year' id="ddlYears1" ></select>
+        <select id="barPlts" name="barPlts">
+            <option value="debtDistressProb">Debt Distress Probability</option>
+            <option value="specGradeProb">Speculative Grade Probability</option>
+        </select>
+
+        <!-- <label for="regions">Bar Plot For Region:</label> --> 
+        <select id="region" name="region">
+            <option value="global">Developing Countries</option>
+            <option value="eastAsia">East Asia and Pacific</option>
+            <option value="europe">Europe and Central Asia</option>
+            <option value="latinAmerica">Latin America & the Caribbean</option>
+            <option value="middleEast">Middle East and North Africa</option>
+            <!-- <option value="northAmerica">North America</option> -->
+            <option value="southAsia">South Asia</option>
+            <option value="saharanAfrica">Sub-Saharan Africa</option>
+        </select>
+        <input id="which_plt" name="which_plt" type="hidden" value="bPlot">
+        <input type="submit" value="View Regional Bar Plot">
+    </form>
+</span>
+
 {% if not is_post or not is_native_barp%}
-<h4 style="display: flex; justify-content: center; align-items: center;"> Bar Chart for Developing Countries <script type="text/javascript">document.write(new Date().getFullYear());</script></h4>
+<h4 style="display: flex; justify-content: center; align-items: center;"> {{region_name}} <script type="text/javascript">document.write(new Date().getFullYear());</script></h4>
 {% endif %}
 
 {% if is_post and is_native_barp%}
-<h4 style="display: flex; justify-content: center; align-items: center;"> Bar Chart for Developing Countries {{year}}</h4>
+<h4 style="display: flex; justify-content: center; align-items: center;"> {{region_name}} {{year}}</h4>
 {% endif %}
 
-<div style="margin: 20px; width: 1380px;">
+<div style="margin: 20px 20px 0px 20px; width: 1380px;">
     <canvas id="myChart"></canvas>
 </div>
-
-<br>
+<!-- <br> -->
 <hr>
+<div class="info-text">
+<p>The External Vulnerability Index and Sovereign Risk Assessment for developing countries was developed by Sanket Mohapatra and Hansa Mehrotra. </p>
 
+<p>The risk indicators presented in this webpage are the result of a modelling exercise based on available macroeconomic data and do not capture changes in political and other factors that can also affect sovereign risk. The authors are thankful to IIMA and UTI AMC for financial support, and to Jayesh Manani for designing the website.  </p>
+</div>
 
 <!-- This Script is for Dynamically Creat the Drop Down Menu for Years-->
 <script type="text/javascript">

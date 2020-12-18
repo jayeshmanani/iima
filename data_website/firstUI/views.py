@@ -10,10 +10,19 @@ from .models import Country # from firstUI.models import Country
 
 d_wmap = pd.read_json('https://cdn.jsdelivr.net/gh/highcharts/highcharts@v7.0.0/samples/data/world-population-density.json')
 
+updated_data = 0
+
 def indexPage(request):
     is_debt_distress = 1
     is_post = 0
     is_native_barp = 0
+    global updated_data
+    region_name = "Developing Countries"
+    if updated_data == 1:
+        alrt = 1
+        updated_data = 0
+    else:
+        alrt = 0
     if request.method =='POST':
         is_post = 1
         # this is for the bar plot
@@ -35,18 +44,24 @@ def indexPage(request):
                 data = data
             elif rgn == 'eastAsia':
                 data = data[data.region == "East Asia and Pacific"]
+                region_name = "East Asia and Pacific"
             elif rgn == 'europe':
                 data = data[data.region == "Europe and Central Asia"]
+                region_name = "Europe and Central Asia"
             elif rgn == 'latinAmerica':
                 data = data[data.region == "Latin America & the Caribbean"]
+                region_name = "Latin America & the Caribbean"
             elif rgn == 'middleEast':
                 data = data[data.region == "Middle East and North Africa"]
-            elif rgn == 'northAmerica':
-                data = data[data.region == "North America"]
+                region_name = "Middle East and North Africa"
+            # elif rgn == 'northAmerica':
+            #     data = data[data.region == "North America"]
             elif rgn == 'southAsia':
                 data = data[data.region == "South Asia"]
+                region_name = "South Asia"
             elif rgn == 'saharanAfrica':
                 data = data[data.region == "Sub-Saharan Africa"]
+                region_name = "Sub-Saharan Africa"
 
             if for_which == 'debtDistressProb':
                 data = data[['country_name','Debt_Distress_prob']].sort_values(by=['Debt_Distress_prob'], ascending=False).dropna()
@@ -77,7 +92,7 @@ def indexPage(request):
                     "value": ft.iloc[i]['value'],
                     "code": ft.iloc[i]['code']})
 
-            context = {'is_native_barp':is_native_barp, 'is_post':is_post, 'is_debt_distress':is_debt_distress, 'barplotVal':barplotVal, 'country_name':country_name, 'year':f_year, 'is_spec_worldPlot':is_spec_worldPlot,'dataForMapGraph':dataForMapGraph} #, 'maxVal':maxVal}    
+            context = {'region_name':region_name, 'alrt':alrt, 'is_native_barp':is_native_barp, 'is_post':is_post, 'is_debt_distress':is_debt_distress, 'barplotVal':barplotVal, 'country_name':country_name, 'year':f_year, 'is_spec_worldPlot':is_spec_worldPlot,'dataForMapGraph':dataForMapGraph} #, 'maxVal':maxVal}    
             # context = {'year':f_year, 'country_name':country_name, 'barplotVal':barplotVal, 'is_debt_distress':is_debt_distress}
         elif whc_plt == 'wPlot':
             which_wplot = str(request.POST['worldPlot'])
@@ -122,7 +137,7 @@ def indexPage(request):
             country_name2 = data2.country_name.to_list()
             debt_barplotVal2 = data2.Debt_Distress_prob.fillna(0).to_list()
             debt_barplotVal2 = list(pd.Series(debt_barplotVal2).apply(lambda x: np.round(x, decimals=2)))
-            context = {'is_native_barp':is_native_barp, 'is_post':is_post, 'is_debt_distress':is_debt_distress, 'barplotVal':debt_barplotVal2, 'country_name':country_name2, 'year':f_year, 'is_spec_worldPlot':is_spec_worldPlot,'dataForMapGraph':dataForMapGraph} #, 'maxVal':maxVal}    
+            context = {'region_name':region_name, 'alrt':alrt, 'is_native_barp':is_native_barp, 'is_post':is_post, 'is_debt_distress':is_debt_distress, 'barplotVal':debt_barplotVal2, 'country_name':country_name2, 'year':f_year, 'is_spec_worldPlot':is_spec_worldPlot,'dataForMapGraph':dataForMapGraph} #, 'maxVal':maxVal}    
     else:
         f_year = datetime.date.today().year
         data = check_if_data(f_year)
@@ -145,7 +160,7 @@ def indexPage(request):
                 "name": ft.iloc[i]['name'],
                 "value": ft.iloc[i]['value'],
                 "code": ft.iloc[i]['code']})
-        context = {'is_native_barp':is_native_barp, 'is_post':is_post, 'is_debt_distress':is_debt_distress, 'barplotVal':debt_barplotVal, 'country_name':country_name, 'year':f_year, 'is_spec_worldPlot':is_spec_worldPlot,'dataForMapGraph':dataForMapGraph}    
+        context = {'region_name':region_name, 'alrt':alrt, 'is_native_barp':is_native_barp, 'is_post':is_post, 'is_debt_distress':is_debt_distress, 'barplotVal':debt_barplotVal, 'country_name':country_name, 'year':f_year, 'is_spec_worldPlot':is_spec_worldPlot,'dataForMapGraph':dataForMapGraph}    
         # context = {'year':f_year, 'country_name':country_name, 'barplotVal':debt_barplotVal, 'is_debt_distress':is_debt_distress}
     return render(request, 'index.html' , context=context)
 
@@ -264,6 +279,7 @@ def worldPlot(request):
     return render(request, 'result.html', context)
 
 def updateStatus(request):
+    global updated_data
     if request.method =='POST':
         yr = int(request.POST['year'])
         yr -= 1
@@ -276,10 +292,11 @@ def updateStatus(request):
         cnn = Country.objects.filter(country_name = cntr)
         for i in cnn:    
             cnn_id = i.id
-        alrt = 1
+        updated_data = 1
         FinanceData.objects.filter(data_year=yr, country_id=cnn_id).update(show=tf)
-        context = {'alrt':alrt}
-        return render(request, 'index.html',context)    
+        # context = {'alrt':alrt}
+        # return render(request, 'index.html',context)    
+        return redirect(indexPage)
     else:
         country_l = list(Country.objects.all().values())
         context = {'country_l':country_l}

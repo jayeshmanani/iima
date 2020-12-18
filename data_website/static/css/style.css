@@ -2,10 +2,17 @@
     justify-content: center; 
     align-items: center; 
     display: flex;
+    margin-bottom: 15px;
+
+}
+
+html{
+    min-height: 100%;
+    position: relative;
+
 }
 
 html, body {
-    height: 100%;
     scroll-padding-top: 70px; /* height of sticky header */
 }
 
@@ -18,7 +25,6 @@ body{
 
 .fixed-header, .fixed-footer{
     width: 100%;
-    position: fixed;        
     background: #333;
     padding: 10px 0;
     color: #fff;
@@ -31,10 +37,15 @@ body{
 .fixed-header{
     margin-left: 0px;
     top: 0;
+    position: fixed;
 }
 
 .fixed-footer{
     bottom: 0;
+    position: absolute;
+    left: 0;
+    height: auto;
+    width: 100%;
 }
 
 .container{
@@ -89,3 +100,43 @@ p, a{
     vertical-align: middle !important;
 }
 
+.info-text {
+    max-width: 1423px;
+    padding: 0px 35px 14px;
+}
+.info-text p{
+    color: black;
+}
+.selection input[type="submit"] {
+    background-color: #0000ff;
+    color: #fff;
+    border: 0;
+    font-size: 15px;
+    line-height: 16px;
+    display: inline-block;
+    padding: 6px 15px 8px;
+    border-radius: 5px;
+    margin-left: 5px;
+    text-transform: capitalize;
+}
+
+.selection select {
+    border: 1px solid;
+    border-radius: 4px;
+    padding: 4px 7px;
+    vertical-align: top;
+    margin-left: 6px;
+}
+
+section {
+    padding-top: 31px;
+}
+span.selection.chart-form {
+    margin-top: 11px;
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+}
+.selection input[type="submit"]:hover {
+    background-color: rgb(0 0 255 / 0.8);
+}
