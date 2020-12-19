@@ -47,6 +47,10 @@
 
 <div style="margin: 20px; width: 1380px; height: 550px;" id="mapChart"> </div> </div>
 
+<div class="info-text text-center">
+    <p>In this map above White colour/(0 Value) indicates that we are not calculating or we does not account the 
+        data of this countries in our research.</p>
+</div>
 <br>
 <hr>
 
@@ -162,8 +166,10 @@ var chart = new Chart(ctx, {
         labels: {{country_name|safe}},
         datasets: [{
             label: label_name,
-            backgroundColor: 'rgb(255, 99, 132)',
-            borderColor: 'rgb(255, 99, 132)',
+        //    backgroundColor: 'rgb(255, 99, 132)',
+        //    borderColor: 'rgb(255, 99, 132)',
+            backgroundColor: 'rgb(0, 0, 255)',
+            borderColor: 'rgb(0, 0, 255)',
             data: {{barplotVal|safe}}
         }]
     },
@@ -198,9 +204,10 @@ var chart = new Chart(ctx, {
                 map: 'custom/world'
             },
 
-            colors: ['rgba(64,19,117,0.05)', 'rgba(64,19,117,0.2)', 'rgba(64,19,117,0.4)',
-                'rgba(64,19,117,0.5)', 'rgba(64,19,117,0.6)', 'rgba(64,19,117,0.8)', 'rgba(64,19,117,1)'],
-    
+           // colors: ['rgba(64,19,117,0.05)', 'rgba(64,19,117,0.2)', 'rgba(64,19,117,0.4)',
+             //   'rgba(64,19,117,0.5)', 'rgba(64,19,117,0.6)', 'rgba(64,19,117,0.8)', 'rgba(64,19,117,1)'],
+            colors: ['rgba(255,255,255,0)' ,'rgba(255,0,0,0.13)', 'rgba(255,0,0,0.27)', 'rgba(255,0,0,0.41)',
+                'rgba(255,0,0,0.56)', 'rgba(255,0,0,0.70)', 'rgba(255,0,0,0.84)', 'rgba(255,0,0,1)'],
             title: {
                     text: title_text
                     //'Speculative Grade Probability'
@@ -243,7 +250,12 @@ var chart = new Chart(ctx, {
             },
             colorAxis: {
                 dataClassColor: 'category',
-                dataClasses: [{
+                dataClasses: [
+                {
+                    to: 0.01
+                },
+                {   
+                    from: 0.01,
                     to: 14
                 }, {
                     from: 14,
