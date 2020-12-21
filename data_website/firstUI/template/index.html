@@ -7,23 +7,25 @@
         <h3>External Vulnerability Index and Sovereign Risk Assessment</h3> 
     </span>
 
+    {% if user.is_authenticated %}
     <span class="selection">
         <form method="POST">
             {% csrf_token %}
 
-            Choose Year: <select name='year' id="ddlYears0" ></select>
+            Choose Year: <select name='year' id="ddlYears2" ></select>
             <!-- <input type="submit" value="View Data" onclick="javascript: form.action='/year';"> -->
             <!-- <input type="submit" value="View Bar Graph" onclick="javascript: form.action='/graph';"> -->
             <!-- <input type="submit" value="View Developing Country Graph" onclick="javascript: form.action='/wGraph';"> -->
             <input type="submit" value="Refresh Data" onclick="javascript: form.action='/refreshData';">
         </form>
     </span>
+    {% endif %}
 
     <span class="selection">
         <form action="/" method="POST">
             {% csrf_token %}
             <!-- <label for="worldPlt">World Map For:</label> -->
-            Year: <select name='year' id="ddlYears2" ></select>
+            Year: <select name='year' id="ddlYears0" ></select>
             <select id="worldPlot" name="worldPlot">
                 <option value="debtDistressProb">Debt Distress Probability</option>
                 <option value="specGradeProb">Speculative Grade Probability</option>
