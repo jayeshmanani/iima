@@ -32,9 +32,17 @@
         <div class="header">
             <nav>
                 <a href="/"><span>Home</span></a>
-                <a href="/updateStatus">Update Data</a>
+
                 <!-- <a href="/pieChart">Pie Chart</a> -->
-                <a href="/admin">Admin Login</a>
+                
+                {% if user.is_authenticated %}
+                <a href="/updateStatus">Update Data</a>
+                <a href="/admin">Admin Panel</a>
+                <a href="{% url 'logout' %}">Log Out</a>
+                {% else %}
+                <!-- <p>You are not logged in</p> -->
+                <a href="{% url 'login' %}">Log In</a>
+                {% endif %}
             </nav>            
         </div>
     </div>  
