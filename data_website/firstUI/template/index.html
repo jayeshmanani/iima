@@ -6,7 +6,7 @@
     <span class="selection">
         <h3>External Vulnerability Index and Sovereign Risk Assessment</h3> 
     </span>
-
+    <!-- <hr> -->
     {% if user.is_authenticated %}
     <span class="selection">
         <form method="POST">
@@ -20,7 +20,7 @@
         </form>
     </span>
     {% endif %}
-
+    <hr>
     <span class="selection">
         <form action="/" method="POST">
             {% csrf_token %}
