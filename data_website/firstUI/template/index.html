@@ -7,6 +7,7 @@
         <h3>External Vulnerability Index and Sovereign Risk Assessment</h3> 
     </span>
     <!-- <hr> -->
+    <div class="wrapper">
     {% if user.is_authenticated %}
     <span class="selection">
         <form method="POST">
@@ -20,7 +21,9 @@
         </form>
     </span>
     {% endif %}
+    </div>
     <hr>
+    <div class="wrapper">
     <span class="selection">
         <form action="/" method="POST">
             {% csrf_token %}
@@ -35,10 +38,11 @@
         </form>
     </span>
 </div>
+</div>
 
 <br>
 <hr>
-
+<div class="wrapper">
 {% if not is_post or is_native_barp%}
 <h4 style="display: flex; justify-content: center; align-items: center;"> Developing Countries <script type="text/javascript">document.write(new Date().getFullYear());</script></h4>
 {% endif %}
@@ -47,15 +51,17 @@
 <h4 style="display: flex; justify-content: center; align-items: center;"> Developing Countries {{year}}</h4>
 {% endif %}
 
-<div style="margin: 20px; width: 1380px; height: 550px;" id="mapChart"> </div> </div>
+<div style=" width: 1380px; height: 550px;" id="mapChart"> </div> 
 
 <div class="info-text text-center">
     <p>In this map above White colour/(0 Value) indicates that we are not calculating or we does not account the 
         data of this countries in our research.</p>
 </div>
+</div>
+</div>
 <br>
 <hr>
-
+<div class="wrapper">
 <span class="selection chart-form">
     <form action="/" method="POST">
         {% csrf_token %}
@@ -90,17 +96,20 @@
 <h4 style="display: flex; justify-content: center; align-items: center;"> {{region_name}} {{year}}</h4>
 {% endif %}
 
-<div style="margin: 20px 20px 0px 20px; width: 1380px;">
+<div style="width: 1380px;">
     <canvas id="myChart"></canvas>
 </div>
 <!-- <br> -->
+</div>
 <hr>
+<div class="wrapper">
 <div class="info-text">
 <p>The External Vulnerability Index and Sovereign Risk Assessment for developing countries was developed by Sanket Mohapatra and Hansa Mehrotra. </p>
 
 <p>The risk indicators presented in this webpage are the result of a modelling exercise based on available macroeconomic data and do not capture changes in political and other factors that can also affect sovereign risk. The authors are thankful to IIMA and UTI AMC for financial support, and to Jayesh Manani for designing the website.  </p>
 </div>
-
+</div>
+</div>
 <!-- This Script is for Dynamically Creat the Drop Down Menu for Years-->
 <script type="text/javascript">
     window.onload = function () {
